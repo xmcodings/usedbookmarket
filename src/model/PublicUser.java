@@ -2,14 +2,16 @@ package model;
 
 public class PublicUser extends User{
 	
-	
+	private String userID;
+	private String userPassword;
 	private String userName;
 	private String userPhoneNum;
 	private String userEmail;
 	
 	public PublicUser (String id, String pass, String name, String phoneNum, String email) {
 	
-		super(id, pass);	
+		this.setUserID(id);
+		this.setUserPassword(pass);
 		this.setUserName(name);
 		this.setUserPhoneNum(phoneNum);
 		this.setUserEmail(email);

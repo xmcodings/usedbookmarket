@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import model.Admin;
 import model.Book;
 import model.PublicUser;
 import view.MainMenuGUI;
@@ -13,15 +14,9 @@ public class MainController {
 
 	ArrayList<Book> books = new ArrayList<Book>();
 	ArrayList<PublicUser> users = new ArrayList<PublicUser>();
-	
-	//MainView mainMenu = new MainView();
+	ArrayList<Admin> admins = new ArrayList<Admin>();
 	
 	MainMenuGUI mainMenu;
-	
-	
-	//private static final byte LOGIN = 1;
-	//private static final byte SIGNUP = 2;
-	//private static final byte EXIT = 3;
 	
 	public MainController(MainMenuGUI view) {
 		this.mainMenu = view;
@@ -50,6 +45,10 @@ public class MainController {
 		return false;
 	}
 	
+	private void register(String id, String password, String name, String phonenum, String email) {
+		
+		
+	}
 	
 	
 	
@@ -60,10 +59,25 @@ public class MainController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			mainMenu.showSignUp();
+			String id = mainMenu.getLoginID();
+			String pass = mainMenu.getLoginPassword();
+			if(loginAuth(id, pass)) {
+				System.out.println("login success");
+			}
+			else {
+				System.out.println("login fail");
+			}
 		}
 	}
 	class onClickSignUpButton implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			mainMenu.showSignUp();
+		}
+	}
+	
+	class onClickRegisterButton implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub

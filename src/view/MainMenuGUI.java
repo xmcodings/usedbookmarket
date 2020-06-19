@@ -35,6 +35,9 @@ public class MainMenuGUI extends JFrame {
 	private JButton signUpButton;
 	private JButton exitButton;
 	
+	private JButton registerButton;
+	
+	
 	private JTextField loginIDText;
 	private JTextField loginPassText;
 	
@@ -92,8 +95,9 @@ public class MainMenuGUI extends JFrame {
 	}
 	
 	public void showSignUp() {
-		
+				
 		signUpPane = new JPanel();
+		registerButton= new JButton("Register");
 		
 		signUpPane.setLayout(new BoxLayout(signUpPane, BoxLayout.PAGE_AXIS));
 		signUpPane.add(new JLabel("Please Fill the Information Below to Sign Up"));
@@ -119,7 +123,7 @@ public class MainMenuGUI extends JFrame {
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(new JLabel(" "));
 		
-		signUpPane.add(signUpButton);
+		signUpPane.add(registerButton);
 	
 		contentPane = signUpPane;
 		refreshPane();
@@ -134,11 +138,22 @@ public class MainMenuGUI extends JFrame {
 	public void addSignUpActionListener(ActionListener e) {
 		signUpButton.addActionListener(e);
 	}
+	public void addRegisterActionListener(ActionListener e) {
+		registerButton.addActionListener(e);
+	}
 	
 	
 	private void refreshPane() {
 		this.setContentPane(contentPane);
 		revalidate();
 	}
+	
+	public String getLoginID() {
+		return loginIDText.getText();
+	}
+	public String getLoginPassword() {
+		return loginPassText.getText();
+	}
+	
 	
 }
