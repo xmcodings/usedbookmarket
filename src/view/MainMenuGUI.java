@@ -4,6 +4,7 @@ package view;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -64,6 +65,9 @@ public class MainMenuGUI extends JFrame {
 		loginButton = new JButton("Login");
 		signUpButton = new JButton("Sign Up");
 		
+		registerButton= new JButton("Register");
+		
+		
 		loginIDLabel = new JLabel("ID");
 		loginPasswordLabel = new JLabel("Password");
 		welcomMessage = new JLabel("Welcome to Used Book Marketplace");
@@ -107,7 +111,7 @@ public class MainMenuGUI extends JFrame {
 	public void showSignUp() {
 				
 		signUpPane = new JPanel();
-		registerButton= new JButton("Register");
+		
 		
 		signUpPane.setLayout(new BoxLayout(signUpPane, BoxLayout.PAGE_AXIS));
 		signUpPane.add(new JLabel("Please Fill the Information Below to Sign Up"));
@@ -138,6 +142,12 @@ public class MainMenuGUI extends JFrame {
 		contentPane = signUpPane;
 		refreshPane();
 		System.out.println("showing signup page");
+	}
+	public void showDuplicateIDWarning() {
+		JOptionPane.showMessageDialog(this, "Same ID Already Exists");
+	}
+	public void showLoginFailWarning() {
+		JOptionPane.showMessageDialog(this, "Wrong ID or Password");
 	}
 	
 	

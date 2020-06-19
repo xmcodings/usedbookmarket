@@ -10,7 +10,9 @@ public class Admin extends User{
 	public Admin(String id, String pass) {
 		
 		this.setUserID(id);
-		this.setUserPassword(pass);		
+		this.setUserPassword(pass);
+		this.isAdmin = true;
+		
 	}
 	
 	

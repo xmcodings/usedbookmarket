@@ -17,9 +17,6 @@ public class MainController {
 
 	UserDB usedBookServiceUser = new UserDB();
 	BookDB usedBook = new BookDB();
-	
-	
-	
 	MainMenuGUI mainMenu;
 	
 	public MainController(MainMenuGUI view) {
@@ -27,6 +24,7 @@ public class MainController {
 		
 		mainMenu.addLoginActionListener(new onClickLoginButton());
 		mainMenu.addSignUpActionListener(new onClickSignUpButton());
+		mainMenu.addRegisterActionListener(new onClickRegisterButton());
 		
 		Admin admin = new Admin("admin", "nayana"); 
 		usedBookServiceUser.addUserData(admin);  // initialize first admin with id: admin and password: nayana
@@ -53,10 +51,10 @@ public class MainController {
 		return true;
 	}
 	
-	private boolean loginAuth(String id, String pass) {
+	// 0: login fail, 1: user, 2: admin
+	private int loginAuth(String id, String pass) {
 		
 		return usedBookServiceUser.loginAuth(id, pass);
-		
 	}
 	
 	
@@ -68,14 +66,19 @@ public class MainController {
 			// TODO Auto-generated method stub
 			String id = mainMenu.getID();
 			String pass = mainMenu.getPassword();
-			if(loginAuth(id, pass)) {
+			if(loginAuth(id, pass) == 1) {
 				System.out.println("login success");
 			}
-			else {
-				System.out.println("login fail");
+			else if(loginAuth(id, pass) == 2)
+			{
+				System.out.println("login success <admin>");
+				// should go to user view
 			}
-			// should go to user view
-			
+			else{ // login fail
+				System.out.println("login fail");
+				mainMenu.showLoginFailWarning();
+			}
+
 		}
 	}
 	class onClickSignUpButton implements ActionListener{
@@ -95,7 +98,10 @@ public class MainController {
 				// register success
 				mainMenu.showMainLogin();
 			}
-			mainMenu.showSignUp();
+			else {
+				// duplicate id
+			mainMenu.showDuplicateIDWarning();
+			}
 		}
 	}
 	

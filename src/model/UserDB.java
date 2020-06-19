@@ -58,21 +58,24 @@ public class UserDB {
 		adminInfoList.add(new Pair<String, String>(user.getUserID(), user.getUserPassword()));
 	}
 	
-	public boolean loginAuth(String id, String pass) {
-		
+	// 0: login fail, 1: login user, 2: login admin
+	public int loginAuth(String id, String pass) {
 		for(User user : userdata) {
 			if(user.getUserID().equals(id) && user.getUserPassword().equals(pass)) {
-				return true;
+				if(checkAdmin(user)) {
+					return 2;
+				}
+				return 1;
 			}
 		}
-		return false;
+		return 0;
 	}
 	
 	public void printUserList() {
 		
 		for(User user : userdata) {
 		
-			System.out.println("id : " + user.getUserID() + "pass : " + user.getUserPassword());
+			System.out.println("id : " + user.getUserID() + " pass : " + user.getUserPassword());
 			
 		}
 	}

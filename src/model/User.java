@@ -8,7 +8,7 @@ public abstract class User {
 
 	private String userID;
 	private String userPassword;
-	private boolean isAdmin;
+	protected boolean isAdmin;
 	
 	
 	public String getUserID() {

@@ -15,6 +15,7 @@ public class PublicUser extends User{
 		this.setUserName(name);
 		this.setUserPhoneNum(phoneNum);
 		this.setUserEmail(email);
+		this.isAdmin = false;
 	}
 	public String getUserName() {
 		return userName;
