@@ -26,7 +26,9 @@ public abstract class User {
 		this.userPassword = userPassword;
 	}
 	
-	
+	public boolean getIsAdmin() {
+		return isAdmin;
+	}
 	
 	
 	

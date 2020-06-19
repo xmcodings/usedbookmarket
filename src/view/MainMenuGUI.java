@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.awt.TextField;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
@@ -26,24 +27,32 @@ public class MainMenuGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	
-	private JPanel loginPane;
-	private JPanel signUpPane;
-	
+	private JPanel loginPanel;
+	private JPanel signUpPanel;
+	private JPanel userMainPanel;
+	private JPanel adminMainPanel;
 	
 	private JLabel welcomMessage;
 	
 	private JButton loginButton;
 	private JButton signUpButton;
-	private JButton exitButton;
 	
 	private JButton registerButton;
 	
+	private JButton searchTitleButton;
+	private JButton searchISBNButton;
+	private JButton searchPubliherButton;
+	private JButton searchAuthorButton;
+	private JButton searchYearButton;
+	private JButton searchSellerButton;
 	
 	private JTextField idText;
 	private JTextField passText;
 	private JTextField nameText;
 	private JTextField phoneNumText;
 	private JTextField emailText;
+	private JTextField searchText;
+	
 	
 	
 	
@@ -68,6 +77,15 @@ public class MainMenuGUI extends JFrame {
 		registerButton= new JButton("Register");
 		
 		
+		searchTitleButton    =  new JButton("Search Title");
+		searchISBNButton     =  new JButton("Search ISBN");
+		searchPubliherButton =  new JButton("Search Publisher");
+		searchAuthorButton   =  new JButton("Author Search");
+		searchYearButton     =  new JButton("Publish Year Search");
+		searchSellerButton   =  new JButton("Seller Search");
+		
+		
+		
 		loginIDLabel = new JLabel("ID");
 		loginPasswordLabel = new JLabel("Password");
 		welcomMessage = new JLabel("Welcome to Used Book Marketplace");
@@ -82,67 +100,91 @@ public class MainMenuGUI extends JFrame {
 	
 	public void showMainLogin() {
 		
-		loginPane = new JPanel();
+		loginPanel = new JPanel();
 		idText       = new JTextField();
 		passText     = new JTextField();
 		nameText     = new JTextField();
 		phoneNumText = new JTextField();
 		emailText    = new JTextField();
 		
-		loginPane.setLayout(new BoxLayout(loginPane, BoxLayout.PAGE_AXIS));
-		loginPane.add(welcomMessage);
-		loginPane.add(new JLabel(" "));
-		loginPane.add(loginIDLabel);
-		loginPane.add(idText);
-		loginPane.add(new JLabel(" "));
-		loginPane.add(new JLabel(" "));
-		loginPane.add(loginPasswordLabel);
-		loginPane.add(passText);
-		loginPane.add(new JLabel(" "));
-		loginPane.add(new JLabel(" "));
-		loginPane.add(loginButton);
-		loginPane.add(signUpButton);
+		loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.PAGE_AXIS));
+		loginPanel.add(welcomMessage);
+		loginPanel.add(new JLabel(" "));
+		loginPanel.add(loginIDLabel);
+		loginPanel.add(idText);
+		loginPanel.add(new JLabel(" "));
+		loginPanel.add(new JLabel(" "));
+		loginPanel.add(loginPasswordLabel);
+		loginPanel.add(passText);
+		loginPanel.add(new JLabel(" "));
+		loginPanel.add(new JLabel(" "));
+		loginPanel.add(loginButton);
+		loginPanel.add(signUpButton);
 	
-		contentPane = loginPane; 	
+		contentPane = loginPanel; 	
 		refreshPane();
 		System.out.println("showing main login");
 	}
 	
 	public void showSignUp() {
 				
-		signUpPane = new JPanel();
+		signUpPanel = new JPanel();
 		
+		signUpPanel.setLayout(new BoxLayout(signUpPanel, BoxLayout.PAGE_AXIS));
+		signUpPanel.add(new JLabel("Please Fill the Information Below to Sign Up"));
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(loginIDLabel);
+		signUpPanel.add(idText);
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(loginPasswordLabel);
+		signUpPanel.add(passText);
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(new JLabel("Name"));
+		signUpPanel.add(nameText);
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(new JLabel("Phone Number"));
+		signUpPanel.add(phoneNumText);
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(new JLabel("Email"));
+		signUpPanel.add(emailText);
+		signUpPanel.add(new JLabel(" "));
+		signUpPanel.add(new JLabel(" "));
 		
-		signUpPane.setLayout(new BoxLayout(signUpPane, BoxLayout.PAGE_AXIS));
-		signUpPane.add(new JLabel("Please Fill the Information Below to Sign Up"));
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(loginIDLabel);
-		signUpPane.add(idText);
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(loginPasswordLabel);
-		signUpPane.add(passText);
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(new JLabel("Name"));
-		signUpPane.add(nameText);
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(new JLabel("Phone Number"));
-		signUpPane.add(phoneNumText);
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(new JLabel("Email"));
-		signUpPane.add(emailText);
-		signUpPane.add(new JLabel(" "));
-		signUpPane.add(new JLabel(" "));
-		
-		signUpPane.add(registerButton);
+		signUpPanel.add(registerButton);
 	
-		contentPane = signUpPane;
+		contentPane = signUpPanel;
 		refreshPane();
 		System.out.println("showing signup page");
 	}
+	
+	
+	
+	public void showUserMainPanel(String userName) {
+		
+		userMainPanel = new JPanel();
+		
+		userMainPanel.setLayout(new BoxLayout(userMainPanel, BoxLayout.PAGE_AXIS));
+		
+		userMainPanel.add(new JLabel("Hello " + userName +"! Welcome Back!"));
+		userMainPanel.add(new JLabel(" "));
+		userMainPanel.add(new JLabel(" "));
+		
+		userMainPanel.add(searchText);
+		JPanel searchButtonPanel = new JPanel();
+		searchButtonPanel.setLayout(new FlowLayout());
+		searchButtonPanel.add(comp)
+		
+		userMainPanel.add(searchButtonPanel);
+		
+		
+	}
+	
+	
+	
 	public void showDuplicateIDWarning() {
 		JOptionPane.showMessageDialog(this, "Same ID Already Exists");
 	}

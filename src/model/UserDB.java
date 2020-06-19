@@ -62,7 +62,7 @@ public class UserDB {
 	public int loginAuth(String id, String pass) {
 		for(User user : userdata) {
 			if(user.getUserID().equals(id) && user.getUserPassword().equals(pass)) {
-				if(checkAdmin(user)) {
+				if(user.getIsAdmin()) {
 					return 2;
 				}
 				return 1;
