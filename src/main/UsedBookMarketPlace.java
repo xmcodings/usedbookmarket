@@ -1,31 +1,35 @@
 package main;
 
-import java.awt.EventQueue;
-import java.util.Calendar;
+
+
+import javax.swing.SwingUtilities;
 
 import controller.MainController;
-import model.Book;
+
 import view.MainMenuGUI;
 
 public class UsedBookMarketPlace {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
-		MainController marketMainController = new MainController();
-			
-		marketMainController.startProgram();
 		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainMenuGUI frame = new MainMenuGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	
+		MainMenuGUI mainGUI = new MainMenuGUI();
+		
+		MainController marketMainController = new MainController(mainGUI);
+		
+		mainGUI.setVisible(true);
+		
 	}
+	
+	static void refreshGUI() {
+		SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+            	MainMenuGUI mainGUI = new MainMenuGUI();
+            }
+	});
+	
+}
+
+
 }
