@@ -68,11 +68,15 @@ public class MainController {
 			String pass = mainMenu.getPassword();
 			if(loginAuth(id, pass) == 1) {
 				System.out.println("login success");
+				// should go to user view
+				mainMenu.showUserMainPanel(id);
+				
 			}
 			else if(loginAuth(id, pass) == 2)
 			{
 				System.out.println("login success <admin>");
-				// should go to user view
+				// should go to admin view
+				
 			}
 			else{ // login fail
 				System.out.println("login fail");

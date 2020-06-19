@@ -172,14 +172,24 @@ public class MainMenuGUI extends JFrame {
 		userMainPanel.add(new JLabel("Hello " + userName +"! Welcome Back!"));
 		userMainPanel.add(new JLabel(" "));
 		userMainPanel.add(new JLabel(" "));
+		searchText = new JTextField();
 		
 		userMainPanel.add(searchText);
+		
 		JPanel searchButtonPanel = new JPanel();
 		searchButtonPanel.setLayout(new FlowLayout());
-		searchButtonPanel.add(comp)
+		searchButtonPanel.add(searchTitleButton);
+		searchButtonPanel.add(searchAuthorButton);
+		searchButtonPanel.add(searchPubliherButton);
+		searchButtonPanel.add(searchISBNButton);
+		searchButtonPanel.add(searchSellerButton);
+		
 		
 		userMainPanel.add(searchButtonPanel);
 		
+		contentPane = userMainPanel;
+		refreshPane();
+		System.out.println("showing user page");
 		
 	}
 	
