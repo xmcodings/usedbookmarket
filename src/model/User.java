@@ -1,11 +1,16 @@
 package model;
 
+import java.util.ArrayList;
+
+import javafx.util.Pair;
+
 public abstract class User {
 
 	private String userID;
 	private String userPassword;
+	private boolean isAdmin;
 	
-
+	
 	public String getUserID() {
 		return userID;
 	}
@@ -20,6 +25,10 @@ public abstract class User {
 	public void setUserPassword(String userPassword) {
 		this.userPassword = userPassword;
 	}
+	
+	
+	
+	
 	
 }
 

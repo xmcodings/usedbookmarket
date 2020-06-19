@@ -17,19 +17,11 @@ public class UsedBookMarketPlace {
 		
 		MainController marketMainController = new MainController(mainGUI);
 		
+		
 		mainGUI.setVisible(true);
 		
 	}
 	
-	static void refreshGUI() {
-		SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-            	MainMenuGUI mainGUI = new MainMenuGUI();
-            }
-	});
-	
-}
 
 
 }

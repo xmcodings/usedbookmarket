@@ -38,11 +38,19 @@ public class MainMenuGUI extends JFrame {
 	private JButton registerButton;
 	
 	
-	private JTextField loginIDText;
-	private JTextField loginPassText;
+	private JTextField idText;
+	private JTextField passText;
+	private JTextField nameText;
+	private JTextField phoneNumText;
+	private JTextField emailText;
+	
+	
 	
 	private JLabel loginIDLabel;
 	private JLabel loginPasswordLabel;
+	
+	
+	
 	
 	public MainMenuGUI() {
 		
@@ -61,29 +69,31 @@ public class MainMenuGUI extends JFrame {
 		welcomMessage = new JLabel("Welcome to Used Book Marketplace");
 		welcomMessage.setSize(WIDTH, 500);
 		
-		loginIDText = new JTextField();
-		loginPassText = new JTextField();
+		idText = new JTextField();
+		passText = new JTextField();
 		
 		this.setContentPane(contentPane);
-		
 	}
-	
-	
 	
 	
 	public void showMainLogin() {
 		
 		loginPane = new JPanel();
+		idText       = new JTextField();
+		passText     = new JTextField();
+		nameText     = new JTextField();
+		phoneNumText = new JTextField();
+		emailText    = new JTextField();
 		
 		loginPane.setLayout(new BoxLayout(loginPane, BoxLayout.PAGE_AXIS));
 		loginPane.add(welcomMessage);
 		loginPane.add(new JLabel(" "));
 		loginPane.add(loginIDLabel);
-		loginPane.add(loginIDText);
+		loginPane.add(idText);
 		loginPane.add(new JLabel(" "));
 		loginPane.add(new JLabel(" "));
 		loginPane.add(loginPasswordLabel);
-		loginPane.add(loginPassText);
+		loginPane.add(passText);
 		loginPane.add(new JLabel(" "));
 		loginPane.add(new JLabel(" "));
 		loginPane.add(loginButton);
@@ -103,23 +113,23 @@ public class MainMenuGUI extends JFrame {
 		signUpPane.add(new JLabel("Please Fill the Information Below to Sign Up"));
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(loginIDLabel);
-		signUpPane.add(loginIDText);
+		signUpPane.add(idText);
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(loginPasswordLabel);
-		signUpPane.add(loginPassText);
+		signUpPane.add(passText);
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(new JLabel("Name"));
-		signUpPane.add(loginIDText);
+		signUpPane.add(nameText);
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(new JLabel("Phone Number"));
-		signUpPane.add(loginPassText);
+		signUpPane.add(phoneNumText);
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(new JLabel("Email"));
-		signUpPane.add(loginPassText);
+		signUpPane.add(emailText);
 		signUpPane.add(new JLabel(" "));
 		signUpPane.add(new JLabel(" "));
 		
@@ -148,12 +158,19 @@ public class MainMenuGUI extends JFrame {
 		revalidate();
 	}
 	
-	public String getLoginID() {
-		return loginIDText.getText();
+	public String getID() {
+		return idText.getText();
 	}
-	public String getLoginPassword() {
-		return loginPassText.getText();
+	public String getPassword() {
+		return passText.getText();
 	}
-	
-	
+	public String getName() {
+		return nameText.getText();
+	}
+	public String getPhoneNum() {
+		return phoneNumText.getText();
+	}
+	public String getEmail() {
+		return emailText.getText();
+	}
 }
