@@ -6,9 +6,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import javafx.event.ActionEvent;
+import model.Book;
+import model.BookDB;
+import model.UserDB;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -16,6 +22,9 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.TextField;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
@@ -23,15 +32,21 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class MainMenuGUI extends JFrame {
+public class MainMenuGUI extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 1L;
+	
+	private UserDB users;
+	private BookDB Books;
+	
+	
 	private JPanel contentPane;
 	
 	private JPanel loginPanel;
 	private JPanel signUpPanel;
 	private JPanel userMainPanel;
 	private JPanel adminMainPanel;
+	private JPanel searchResultPane;
 	
 	private JLabel welcomMessage;
 	
@@ -226,6 +241,48 @@ public class MainMenuGUI extends JFrame {
 		System.out.println("showing user page");
 	}
 	
+	public void showSearchResultPanel() {
+		
+		searchResultPane = new JPanel();
+		searchResultPane.setLayout(new BoxLayout(searchResultPane, BoxLayout.PAGE_AXIS));
+		
+		searchResultPane.add(new JLabel(" "));
+		searchResultPane.add(new JLabel(" "));
+		searchResultPane.add(new JLabel("----- Search Results -----"));
+		searchResultPane.add(new JLabel(" "));
+		searchResultPane.add(new JLabel(" "));
+		// table to show search results
+		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Seller"};
+		JTable searchTable = new JTable();
+		
+		DefaultTableModel bookModel = new DefaultTableModel(columns, 0);
+		searchTable.setModel(bookModel);
+		
+		
+		JScrollPane searchScrollPane = new JScrollPane(searchTable);
+		
+		searchResultPane.add(searchScrollPane);
+		searchResultPane.add(new JLabel(" "));
+		
+		
+		
+		contentPane = searchResultPane;
+		refreshPane();
+		System.out.println("showing signup page");
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	public void showDuplicateIDWarning() {
@@ -263,7 +320,7 @@ public class MainMenuGUI extends JFrame {
 	public void addRegisterBookActionListener(ActionListener e) {
 		registerBookButton.addActionListener(e);
 	}
-	public void addMyRegisterBookActionListener(ActionListener e) {
+	public void addMyRegisteredBookActionListener(ActionListener e) {
 		myRegisteredBookButton.addActionListener(e);
 	}
 	public void addTransactionHistoryActionListener(ActionListener e) {
@@ -306,9 +363,17 @@ public class MainMenuGUI extends JFrame {
 		this.setContentPane(contentPane);
 		revalidate();
 	}
+
+
 	
 	
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
 	
+		
+		
+	}
 }
 
 

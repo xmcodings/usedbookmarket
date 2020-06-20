@@ -2,9 +2,11 @@ package model;
 
 import java.util.ArrayList;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.util.Pair;
 
-public class UserDB {
+public class UserDB implements Observable{
 
 	private ArrayList<User> userdata = new ArrayList<User>();
 	
@@ -79,6 +81,18 @@ public class UserDB {
 			
 		}
 	}
-	
+
+
+	@Override
+	public void addListener(InvalidationListener arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeListener(InvalidationListener arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

@@ -22,9 +22,25 @@ public class MainController {
 	public MainController(MainMenuGUI view) {
 		this.mainMenu = view;
 		
+		// for main menu
 		mainMenu.addLoginActionListener(new onClickLoginButton());
 		mainMenu.addSignUpActionListener(new onClickSignUpButton());
 		mainMenu.addRegisterActionListener(new onClickRegisterButton());
+		
+		// for user panel // 
+		mainMenu.addSearchTitleActionListener(new onClickSearchTitleButton());
+		mainMenu.addSearchAuthorActionListener(new onClickSearchAuthorButton());
+		mainMenu.addSearchISBNActionListener(new onClickSearchISBNButton());
+		mainMenu.addSearchYearActionListener(new onClickSearchYearButton());
+		mainMenu.addSearchSellerActionListener(new onClickSearchSellerButton());
+		
+		mainMenu.addRegisterBookActionListener(new onClickRegisterBookButton());
+		mainMenu.addMyRegisteredBookActionListener(new onClickMyRegisteredBookButton());
+		mainMenu.addTransactionHistoryActionListener(new onClickMyTransactionButton());
+		mainMenu.addMyProfileActionListener(new onClickMyProfileButton());
+		
+		// for add book panel
+		
 		
 		Admin admin = new Admin("admin", "nayana"); 
 		usedBookServiceUser.addUserData(admin);  // initialize first admin with id: admin and password: nayana
@@ -70,7 +86,6 @@ public class MainController {
 				System.out.println("login success");
 				// should go to user view
 				mainMenu.showUserMainPanel(id);
-				
 			}
 			else if(loginAuth(id, pass) == 2)
 			{
@@ -114,7 +129,7 @@ public class MainController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			
+			mainMenu.showSearchResultPanel();
 		}
 	}
 	class onClickSearchAuthorButton implements ActionListener{
@@ -122,7 +137,7 @@ public class MainController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			
+			mainMenu.showSearchResultPanel();
 		}
 	}	
 	class onClickSearchISBNButton implements ActionListener{
