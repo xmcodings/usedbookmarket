@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javafx.event.ActionEvent;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.TextField;
@@ -45,6 +46,13 @@ public class MainMenuGUI extends JFrame {
 	private JButton searchAuthorButton;
 	private JButton searchYearButton;
 	private JButton searchSellerButton;
+	
+	private JButton registerBookButton;
+	private JButton myRegisteredBookButton;
+	private JButton transactionHistoryButton;
+	private JButton myProfileButton;
+	
+	
 	
 	private JTextField idText;
 	private JTextField passText;
@@ -84,9 +92,13 @@ public class MainMenuGUI extends JFrame {
 		searchYearButton     =  new JButton("Publish Year Search");
 		searchSellerButton   =  new JButton("Seller Search");
 		
-		
-		
-		loginIDLabel = new JLabel("ID");
+		registerBookButton			=  new JButton("Register Book");
+		myRegisteredBookButton      =  new JButton("My Books");        
+		transactionHistoryButton    =  new JButton("Transaction Histroy");         
+		myProfileButton                 =  new JButton("My Profile");    
+		                                             
+		                                       
+		loginIDLabel = new JLabel("ID");             
 		loginPasswordLabel = new JLabel("Password");
 		welcomMessage = new JLabel("Welcome to Used Book Marketplace");
 		welcomMessage.setSize(WIDTH, 500);
@@ -167,11 +179,17 @@ public class MainMenuGUI extends JFrame {
 		
 		userMainPanel = new JPanel();
 		
+		
 		userMainPanel.setLayout(new BoxLayout(userMainPanel, BoxLayout.PAGE_AXIS));
+		
 		
 		userMainPanel.add(new JLabel("Hello " + userName +"! Welcome Back!"));
 		userMainPanel.add(new JLabel(" "));
 		userMainPanel.add(new JLabel(" "));
+		
+		userMainPanel.add(new JLabel("----- Search What You Want!! -----"));
+		userMainPanel.add(new JLabel(" "));
+		
 		searchText = new JTextField();
 		
 		userMainPanel.add(searchText);
@@ -186,11 +204,26 @@ public class MainMenuGUI extends JFrame {
 		
 		
 		userMainPanel.add(searchButtonPanel);
+		userMainPanel.add(new JLabel(" "));
+		userMainPanel.add(new JLabel(" "));
+		userMainPanel.add(new JLabel("----- User Space -----"));
+		userMainPanel.add(new JLabel(" "));
+		userMainPanel.add(new JLabel(" "));
+		JPanel userSpacePanel = new JPanel();
+		userSpacePanel.setLayout(new FlowLayout());
+		
+		userSpacePanel.add(registerBookButton);
+		userSpacePanel.add(myRegisteredBookButton);
+		userSpacePanel.add(transactionHistoryButton);
+		userSpacePanel.add(myProfileButton);
+		userMainPanel.add(userSpacePanel);
+		userMainPanel.add(new JLabel(" "));
+		userMainPanel.add(new JLabel(" "));
+		
 		
 		contentPane = userMainPanel;
 		refreshPane();
 		System.out.println("showing user page");
-		
 	}
 	
 	
@@ -203,7 +236,6 @@ public class MainMenuGUI extends JFrame {
 	}
 	
 	
-	
 	public void addLoginActionListener(ActionListener e) {
 		loginButton.addActionListener(e);
 	}
@@ -213,12 +245,40 @@ public class MainMenuGUI extends JFrame {
 	public void addRegisterActionListener(ActionListener e) {
 		registerButton.addActionListener(e);
 	}
-	
-	
-	private void refreshPane() {
-		this.setContentPane(contentPane);
-		revalidate();
+	public void addSearchTitleActionListener(ActionListener e) {
+		searchTitleButton.addActionListener(e);
 	}
+	public void addSearchISBNActionListener(ActionListener e) {
+		searchISBNButton.addActionListener(e);
+	}
+	public void addSearchAuthorActionListener(ActionListener e) {
+		searchAuthorButton.addActionListener(e);
+	}
+	public void addSearchYearActionListener(ActionListener e) {
+		searchYearButton.addActionListener(e);
+	}
+	public void addSearchSellerActionListener(ActionListener e) {
+		searchSellerButton.addActionListener(e);
+	}
+	public void addRegisterBookActionListener(ActionListener e) {
+		registerBookButton.addActionListener(e);
+	}
+	public void addMyRegisterBookActionListener(ActionListener e) {
+		myRegisteredBookButton.addActionListener(e);
+	}
+	public void addTransactionHistoryActionListener(ActionListener e) {
+		transactionHistoryButton.addActionListener(e);
+	}
+	public void addMyProfileActionListener(ActionListener e) {
+		myProfileButton.addActionListener(e);
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	public String getID() {
 		return idText.getText();
@@ -235,4 +295,20 @@ public class MainMenuGUI extends JFrame {
 	public String getEmail() {
 		return emailText.getText();
 	}
+	
+	public String getSearchContext() {
+		return searchText.getText();
+	}
+
+	
+	
+	private void refreshPane() {
+		this.setContentPane(contentPane);
+		revalidate();
+	}
+	
+	
+	
 }
+
+
