@@ -15,12 +15,15 @@ import view.MainView;
 
 public class MainController {
 
-	UserDB usedBookServiceUser = new UserDB();
-	BookDB usedBook = new BookDB();
+	UserDB usedBookServiceUser; // = new UserDB();
+	BookDB usedBook; // = new BookDB();
 	MainMenuGUI mainMenu;
+	User currentLoginUser;
 	
-	public MainController(MainMenuGUI view) {
+	public MainController(MainMenuGUI view, UserDB userData, BookDB bookData) {
 		this.mainMenu = view;
+		this.usedBookServiceUser = userData;
+		this.usedBook = bookData;
 		
 		// for main menu
 		mainMenu.addLoginActionListener(new onClickLoginButton());
@@ -38,9 +41,9 @@ public class MainController {
 		mainMenu.addMyRegisteredBookActionListener(new onClickMyRegisteredBookButton());
 		mainMenu.addTransactionHistoryActionListener(new onClickMyTransactionButton());
 		mainMenu.addMyProfileActionListener(new onClickMyProfileButton());
+		mainMenu.addSellBookActionListener(new onClickSellBookButton());
 		
 		// for add book panel
-		
 		
 		Admin admin = new Admin("admin", "nayana"); 
 		usedBookServiceUser.addUserData(admin);  // initialize first admin with id: admin and password: nayana
@@ -85,7 +88,8 @@ public class MainController {
 			if(loginAuth(id, pass) == 1) {
 				System.out.println("login success");
 				// should go to user view
-				mainMenu.showUserMainPanel(id);
+				currentLoginUser = usedBookServiceUser.getLoginUser();
+				mainMenu.showUserMainPanel();
 			}
 			else if(loginAuth(id, pass) == 2)
 			{
@@ -170,6 +174,8 @@ public class MainController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
+			mainMenu.showRegisterBookPanel();
+			
 			
 		}
 	}
@@ -197,6 +203,54 @@ public class MainController {
 			
 		}
 	}
+	
+	class onClickSellBookButton implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			
+			String title = mainMenu.getBookTitle();
+			String author = mainMenu.getBookAuthor();
+			String isbn = mainMenu.getBookISBN();
+			String pyear = mainMenu.getBookPublishYear();
+			String publisher = mainMenu.getBookPublisher();
+			String price = mainMenu.getBookPrice();
+
+			if(price.isEmpty()) {
+				price = "-999";
+			}
+			int intPrice;
+			char status = mainMenu.getBookStatus();
+			
+			if(status == 'a') {
+				status = 'a';
+			}
+			if(status == 'b') {
+				status = 'b';
+			}
+			if(status == 'c') {
+				status = 'c';
+			} 
+			// convert to model implementation
+			
+			
+			//check if price contains letter
+			try {
+				intPrice = Integer.parseInt(price);
+				usedBook.addBook(new Book(title, author, isbn, pyear, publisher, intPrice, status, (PublicUser) currentLoginUser));
+				System.out.println("book added!!");
+				usedBook.printBooks();
+				mainMenu.showBookRegisterSuccess();
+				mainMenu.showUserMainPanel();
+				
+			}catch(NumberFormatException ex) {
+				mainMenu.showPriceErrorWarning();
+			}
+		}
+	}
+	
+	
 	
 	
 }

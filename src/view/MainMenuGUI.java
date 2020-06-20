@@ -2,10 +2,13 @@ package view;
 
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
@@ -27,6 +30,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextArea;
@@ -37,7 +41,7 @@ public class MainMenuGUI extends JFrame implements Observer {
 	private static final long serialVersionUID = 1L;
 	
 	private UserDB users;
-	private BookDB Books;
+	private BookDB books;
 	
 	
 	private JPanel contentPane;
@@ -46,7 +50,8 @@ public class MainMenuGUI extends JFrame implements Observer {
 	private JPanel signUpPanel;
 	private JPanel userMainPanel;
 	private JPanel adminMainPanel;
-	private JPanel searchResultPane;
+	private JPanel searchResultPanel;
+	private JPanel registerBookPanel;
 	
 	private JLabel welcomMessage;
 	
@@ -67,6 +72,8 @@ public class MainMenuGUI extends JFrame implements Observer {
 	private JButton transactionHistoryButton;
 	private JButton myProfileButton;
 	
+	private JButton buyBookButton;
+	private JButton sellBookButton;
 	
 	
 	private JTextField idText;
@@ -76,6 +83,13 @@ public class MainMenuGUI extends JFrame implements Observer {
 	private JTextField emailText;
 	private JTextField searchText;
 	
+	private JTextField bookTitleText;
+	private JTextField bookAuthorText;
+	private JTextField bookISBNText;
+	private JTextField bookPublishYearText;
+	private JTextField bookPublisherText;
+	private JRadioButton excellent, good, fair;
+	private JTextField bookPriceText;
 	
 	
 	
@@ -85,11 +99,14 @@ public class MainMenuGUI extends JFrame implements Observer {
 	
 	
 	
-	public MainMenuGUI() {
+	public MainMenuGUI(UserDB systemUsers, BookDB marketBooks) {
 		
 		setTitle("Used Book Marketplace");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 700, 500);
+		setBounds(100, 100, 900, 700);
+		
+		this.users = systemUsers;
+		this.books = marketBooks;
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -112,6 +129,9 @@ public class MainMenuGUI extends JFrame implements Observer {
 		transactionHistoryButton    =  new JButton("Transaction Histroy");         
 		myProfileButton                 =  new JButton("My Profile");    
 		                                             
+		buyBookButton 		= new JButton("Buy");
+		
+		sellBookButton = new JButton("Sell This Book!");
 		                                       
 		loginIDLabel = new JLabel("ID");             
 		loginPasswordLabel = new JLabel("Password");
@@ -130,9 +150,7 @@ public class MainMenuGUI extends JFrame implements Observer {
 		loginPanel = new JPanel();
 		idText       = new JTextField();
 		passText     = new JTextField();
-		nameText     = new JTextField();
-		phoneNumText = new JTextField();
-		emailText    = new JTextField();
+		
 		
 		loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.PAGE_AXIS));
 		loginPanel.add(welcomMessage);
@@ -156,6 +174,10 @@ public class MainMenuGUI extends JFrame implements Observer {
 	public void showSignUp() {
 				
 		signUpPanel = new JPanel();
+		
+		nameText     = new JTextField();
+		phoneNumText = new JTextField();
+		emailText    = new JTextField();
 		
 		signUpPanel.setLayout(new BoxLayout(signUpPanel, BoxLayout.PAGE_AXIS));
 		signUpPanel.add(new JLabel("Please Fill the Information Below to Sign Up"));
@@ -188,20 +210,40 @@ public class MainMenuGUI extends JFrame implements Observer {
 		System.out.println("showing signup page");
 	}
 	
-	
-	
-	public void showUserMainPanel(String userName) {
+	public void showUserMainPanel() {
 		
 		userMainPanel = new JPanel();
 		
-		
 		userMainPanel.setLayout(new BoxLayout(userMainPanel, BoxLayout.PAGE_AXIS));
 		
-		
-		userMainPanel.add(new JLabel("Hello " + userName +"! Welcome Back!"));
+		userMainPanel.add(new JLabel("Hello " + users.getLoginUser().getUserID() +"! Welcome Back!"));
 		userMainPanel.add(new JLabel(" "));
-		userMainPanel.add(new JLabel(" "));
+		userMainPanel.add(new JLabel("----- Recently Added Books -----"));
+
+		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Seller", "Register Date"};
+		JTable recentBookTable = new JTable();
+		DefaultTableModel bookModel = new DefaultTableModel(columns, 0);
 		
+		for(Book b: books.getRecentBookList()) {
+			
+			String title = b.getTitle();
+			String author = b.getAuthor();
+			String isbn = b.getISBN();
+			String publisher = b.getPublisher();
+			String publishYear = b.getPublishYear();
+			String price = b.getPriceString();
+			String status = b.getStatus();
+			String sellerID = b.getRegisterUserId();
+			String registerDate = b.getRegisterDate().toString();
+			
+			Object row[] = { title, author, isbn, publisher, publishYear, price, status, sellerID, registerDate};
+			
+			bookModel.addRow(row);
+		}
+		recentBookTable.setModel(bookModel);
+		JScrollPane recentScrollPane = new JScrollPane(recentBookTable);
+		userMainPanel.add(recentScrollPane);
+		userMainPanel.add(new JLabel(" "));
 		userMainPanel.add(new JLabel("----- Search What You Want!! -----"));
 		userMainPanel.add(new JLabel(" "));
 		
@@ -243,15 +285,17 @@ public class MainMenuGUI extends JFrame implements Observer {
 	
 	public void showSearchResultPanel() {
 		
-		searchResultPane = new JPanel();
-		searchResultPane.setLayout(new BoxLayout(searchResultPane, BoxLayout.PAGE_AXIS));
+		searchResultPanel = new JPanel();
+		searchResultPanel.setLayout(new BoxLayout(searchResultPanel, BoxLayout.PAGE_AXIS));
 		
-		searchResultPane.add(new JLabel(" "));
-		searchResultPane.add(new JLabel(" "));
-		searchResultPane.add(new JLabel("----- Search Results -----"));
-		searchResultPane.add(new JLabel(" "));
-		searchResultPane.add(new JLabel(" "));
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(new JLabel("----- Search Results -----"));
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(new JLabel(" "));
 		// table to show search results
+		// reads search result directly from BookDB instance
+		
 		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Seller"};
 		JTable searchTable = new JTable();
 		
@@ -261,30 +305,83 @@ public class MainMenuGUI extends JFrame implements Observer {
 		
 		JScrollPane searchScrollPane = new JScrollPane(searchTable);
 		
-		searchResultPane.add(searchScrollPane);
-		searchResultPane.add(new JLabel(" "));
+		searchResultPanel.add(searchScrollPane);
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(buyBookButton);
+		searchResultPanel.add(new JLabel(" "));
+				
 		
-		
-		
-		contentPane = searchResultPane;
+		contentPane = searchResultPanel;
 		refreshPane();
-		System.out.println("showing signup page");
-		
-		
-		
+		System.out.println("showing search result view page");
 		
 		
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void showRegisterBookPanel() {
+		
+		registerBookPanel = new JPanel();
+		bookTitleText = new JTextField();
+		bookAuthorText = new JTextField();
+		bookISBNText = new JTextField();
+		bookPublishYearText = new JTextField();
+		bookPublisherText = new JTextField();
+		bookPriceText = new JTextField();
+
+		excellent = new JRadioButton("Excellent");
+		good = new JRadioButton("Good");
+		fair = new JRadioButton("Fair");
+		
+		ButtonGroup bookStatusButtonGroup = new ButtonGroup();
+		bookStatusButtonGroup.add(excellent);
+		bookStatusButtonGroup.add(good);
+		bookStatusButtonGroup.add(fair);
+		
+		
+		
+		registerBookPanel.setLayout(new BoxLayout(registerBookPanel, BoxLayout.PAGE_AXIS));
+		
+		registerBookPanel.add(new JLabel("Please add Book Information"));
+		registerBookPanel.add(new JLabel(" "));
+		registerBookPanel.add(new JLabel("Book Title"));
+		registerBookPanel.add(bookTitleText);
+		registerBookPanel.add(new JLabel(" "));
+		registerBookPanel.add(new JLabel("Book Author"));
+		registerBookPanel.add(bookAuthorText);
+		registerBookPanel.add(new JLabel(" "));
+		registerBookPanel.add(new JLabel("Book ISBN"));
+		registerBookPanel.add(bookISBNText);
+		registerBookPanel.add(new JLabel(" "));
+		registerBookPanel.add(new JLabel("Book Publish Year"));
+		registerBookPanel.add(bookPublishYearText);
+		registerBookPanel.add(new JLabel(" "));
+		registerBookPanel.add(new JLabel("Book Publisher"));
+		registerBookPanel.add(bookPublisherText);
+		registerBookPanel.add(new JLabel(" "));
+		registerBookPanel.add(new JLabel("Book Status"));
+		registerBookPanel.add(excellent);
+		registerBookPanel.add(good);
+		registerBookPanel.add(fair);
+		registerBookPanel.add(new JLabel(" "));
+		registerBookPanel.add(new JLabel("Book Price"));
+		registerBookPanel.add(bookPriceText);
+		registerBookPanel.add(new JLabel(" "));
+		registerBookPanel.add(new JLabel(" "));
+		
+		registerBookPanel.add(sellBookButton);
+		
+		contentPane = registerBookPanel;
+		refreshPane();
+		System.out.println("showing register book view page");
+		
+	}
+	public void showBookRegisterSuccess() {
+		JOptionPane.showMessageDialog(this, "Book Registered!", "Book Register Success", JOptionPane.PLAIN_MESSAGE);
+	}
+	public void showPriceErrorWarning() {
+		JOptionPane.showMessageDialog(this, "Check Price Again");
+	}
 	public void showDuplicateIDWarning() {
 		JOptionPane.showMessageDialog(this, "Same ID Already Exists");
 	}
@@ -329,11 +426,9 @@ public class MainMenuGUI extends JFrame implements Observer {
 	public void addMyProfileActionListener(ActionListener e) {
 		myProfileButton.addActionListener(e);
 	}
-	
-	
-	
-	
-	
+	public void addSellBookActionListener(ActionListener e) {
+		sellBookButton.addActionListener(e);
+	}
 	
 	
 	
@@ -356,7 +451,41 @@ public class MainMenuGUI extends JFrame implements Observer {
 	public String getSearchContext() {
 		return searchText.getText();
 	}
-
+	public String getBookTitle() {
+		return bookTitleText.getText();
+	}
+	public String getBookAuthor() {
+		return bookAuthorText.getText();
+	}
+	public String getBookISBN() {
+		return bookISBNText.getText();
+	}
+	public String getBookPublisher() {
+		return bookPublisherText.getText();
+	}
+	public String getBookPublishYear() {
+		return bookPublishYearText.getText();
+	}
+	public String getBookPrice() {
+		return bookPriceText.getText();
+	}
+	
+	public char getBookStatus() {
+		if(excellent.isSelected()) {
+			return 'a';
+		}
+		if(good.isSelected()) {
+			return 'b';
+		}
+		if(fair.isSelected()) {
+			return 'c';
+		}
+		return 'n';
+	}
+	
+	
+	
+	
 	
 	
 	private void refreshPane() {

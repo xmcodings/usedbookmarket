@@ -12,12 +12,11 @@ public class UserDB implements Observable{
 	
 	private ArrayList<Pair<String, String>> adminInfoList = new ArrayList<Pair<String,String>>();
 	
-	
+	private User loginUser;
 	
 	public UserDB() {
 		
 	
-		
 	}
 	
 	
@@ -64,6 +63,7 @@ public class UserDB implements Observable{
 	public int loginAuth(String id, String pass) {
 		for(User user : userdata) {
 			if(user.getUserID().equals(id) && user.getUserPassword().equals(pass)) {
+				loginUser = user;
 				if(user.getIsAdmin()) {
 					return 2;
 				}
@@ -93,6 +93,10 @@ public class UserDB implements Observable{
 	public void removeListener(InvalidationListener arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public User getLoginUser() {
+		return loginUser;
 	}
 	
 }

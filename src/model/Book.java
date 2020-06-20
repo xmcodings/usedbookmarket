@@ -1,52 +1,74 @@
 package model;
 
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class Book {
 
 	private String title;
 	private String author;
-	private Calendar publishDate;
-	private Calendar registerDate;
+	private String publishYear;
+	private Date registerDate;
+	
 	private String publisher;
+	private String ISBN;
 	private int price;
+	private String priceString;
 	private String genre;
 	private char status; // 3 book status : a : Excellent, b : Good c : Fair 
+	private PublicUser registerUser;
 	
-	
-	public Book() {
+
+	public Book(String title, String author, String isbn, String publishyear, String publisher,int price, char status, PublicUser user) {
+		setTitle(title);
+		setAuthor(author);
+		this.registerUser = user;
+		setISBN(isbn);
+		setPrice(price);
+		setPublishYear(publishyear);
+		setPublisher(publisher);
+		setStatus(status);
+		setPriceString(price);
 		
+		this.registerDate = Calendar.getInstance().getTime();
 	}
-	public Book(String title) {
-		super();
-		this.title = title;
-	}
-	public Book(String title, String author) {
-		super();
-		this.title = title;
-	}
+	
+	
 	public String getAuthor() {
 		return author;
 	}
 	public void setAuthor(String author) {
-		this.author = author;
+		if(author.isEmpty()) {
+			this.author = "not defined";
+		}
+		else {
+			this.author = author;
+		}
 	}
-	public String getPublishDate() {
-		
-		String date;
-		date = publishDate.get(Calendar.YEAR) + "/" + publishDate.get(Calendar.MONTH) + "/" + publishDate.get(Calendar.DATE);
-		return date;
+	public String getPublishYear() {
+		return publishYear;
 	}
 	
-	public void setPublishDate(Calendar publishDate) {
-		this.publishDate = publishDate;
+	public void setPublishYear(String publishYear) {
+		if(publishYear.isEmpty()) {
+			this.publishYear = "not defined";
+		}
+		else {
+			this.publishYear = publishYear;			
+		}
+
 	}
 	public String getPublisher() {
 		return publisher;
 	}
 	public void setPublisher(String publisher) {
-		this.publisher = publisher;
+		if(publisher.isEmpty()) {
+			this.publisher = "not defined";
+		}
+		else {
+			this.publisher = publisher;	
+		}
 	}
 	public int getPrice() {
 		return price;
@@ -54,8 +76,19 @@ public class Book {
 	public void setPrice(int price) {
 		this.price = price;
 	}
-	public char getStatus() {
-		return status;
+	public String getStatus() {
+		if(status == 'a') {
+			return "Excellent";
+		}
+		else if(status == 'b') {
+			return "Good";
+		}
+		else if(status == 'c') {
+			return "Fair";
+		}
+		else {
+			return "Not Defined";
+		}
 	}
 	public void setStatus(char status) {
 		this.status = status;
@@ -67,11 +100,12 @@ public class Book {
 		this.title = title;
 	}
 
-	public Calendar getRegisterDate() {
+	public Date getRegisterDate() {
+		
 		return registerDate;
 	}
 
-	public void setRegisterDate(Calendar registerDate) {
+	public void setRegisterDate(Date registerDate) {
 		this.registerDate = registerDate;
 	}
 	public String getGenre() {
@@ -80,11 +114,36 @@ public class Book {
 	public void setGenre(String genre) {
 		this.genre = genre;
 	}
+	public String getISBN() {
+		return ISBN;
+	}
+	public void setISBN(String iSBN) {
+		if(iSBN.isEmpty()) {
+			this.ISBN = "not defined";
+		}
+		else {
+			this.ISBN = iSBN;			
+		}
+	}
 	
+	public String getRegisterUserId() {
+		return registerUser.getUserID();
+	}
+	public String getRegisterUserEmail() {
+		return registerUser.getUserEmail();
+	}
+
+	public String getPriceString() {
+		return priceString;
+	}
 	
-	
-	
-	
-	
-	
+	public void setPriceString(int price) {
+		if(price < 0) {
+			this.priceString = "Not Defined";
+		}
+		else {
+			priceString = Integer.toString(price);
+		}
+
+	}
 }
