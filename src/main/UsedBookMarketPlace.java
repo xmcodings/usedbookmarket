@@ -2,9 +2,12 @@ package main;
 
 
 
+import java.nio.file.Paths;
+
 import javax.swing.SwingUtilities;
 
 import controller.MainController;
+import model.Admin;
 import model.BookDB;
 import model.PublicUser;
 import model.UserDB;
@@ -14,9 +17,15 @@ public class UsedBookMarketPlace {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
+
+		String filename = "books.csv";
+		System.out.println(filename);
 		UserDB marketUsers = new UserDB();
-		BookDB marketBooks = new BookDB();
+		BookDB marketBooks = new BookDB(filename);
+		Admin admin = new Admin("admin", "nayana"); 
+		marketUsers.addUserData(admin);  // initialize first admin with id: admin and password: nayana
+		
+		
 		
 		// test codes//
 		PublicUser jinwon = new PublicUser("jin", "won", "jinwon", "sdfsdf", "sdfsdf");
