@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import model.Book;
 import model.BookDB;
@@ -22,6 +23,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -104,7 +106,8 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	
 	private JLabel loginIDLabel;
 	private JLabel loginPasswordLabel;
-
+	private DefaultTableModel bookModel;
+	private	DefaultTableModel userModel;
 
 	public MainMenuGUI(UserDB systemUsers, BookDB marketBooks) {
 		
@@ -114,7 +117,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		
 		this.users = systemUsers;
 		this.books = marketBooks;
-		
+		books.addPropertyChangeListener(this);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -168,7 +171,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		passText = new JTextField();
 		
 		// property change listener....
-		
+		books.addPropertyChangeListener(this);
 		
 		this.setContentPane(contentPane);
 	}
@@ -250,25 +253,13 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 
 		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Seller", "Register Date"};
 		JTable recentBookTable = new JTable();
-		DefaultTableModel bookModel = new DefaultTableModel(columns, 0);
 		
-		for(Book b: books.getRecentBookList()) {
-			
-			String title = b.getTitle();
-			String author = b.getAuthor();
-			String isbn = b.getISBN();
-			String publisher = b.getPublisher();
-			String publishYear = b.getPublishYear();
-			String price = b.getPriceString();
-			String status = b.getStatus();
-			String sellerID = b.getRegisterUserId();
-			String registerDate = b.getRegisterDate().toString();
-			
-			Object row[] = { title, author, isbn, publisher, publishYear, price, status, sellerID, registerDate};
-			
-			bookModel.addRow(row);
-		}
+		bookModel = new DefaultTableModel(columns, 0);
+		
+		drawBookTable(bookModel, books.getRecentBookList());
+		
 		recentBookTable.setModel(bookModel);
+		
 		JScrollPane recentScrollPane = new JScrollPane(recentBookTable);
 		userMainPanel.add(recentScrollPane);
 		userMainPanel.add(new JLabel(" "));
@@ -326,25 +317,9 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		
 		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Seller", "Register Date"};
 
-		DefaultTableModel bookModel = new DefaultTableModel(columns, 0);
-
-		for(Book b: books.getSearchResult()) {
-			String title = b.getTitle();
-			String author = b.getAuthor();
-			String isbn = b.getISBN();
-			String publisher = b.getPublisher();
-			String publishYear = b.getPublishYear();
-			String price = b.getPriceString();
-			String status = b.getStatus();
-			String sellerID = b.getRegisterUserId();
-			String registerDate = b.getRegisterDate().toString();
-			
-			Object row[] = { title, author, isbn, publisher, publishYear, price, status, sellerID, registerDate};
-			
-			bookModel.addRow(row);
-		}
+		bookModel = new DefaultTableModel(columns, 0);
 		
-		searchTable.setModel(bookModel);
+		drawBookTable(bookModel, books.getSearchResult());
 		
 		JScrollPane searchScrollPane = new JScrollPane(searchTable);
 		
@@ -376,25 +351,9 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		
 		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Seller", "Register Date"};
 
-		DefaultTableModel bookModel = new DefaultTableModel(columns, 0);
+		bookModel = new DefaultTableModel(columns, 0);
 
-		for(Book b: books.getSearchResult()) {
-			String title = b.getTitle();
-			String author = b.getAuthor();
-			String isbn = b.getISBN();
-			String publisher = b.getPublisher();
-			String publishYear = b.getPublishYear();
-			String price = b.getPriceString();
-			String status = b.getStatus();
-			String sellerID = b.getRegisterUserId();
-			String registerDate = b.getRegisterDate().toString();
-			
-			Object row[] = { title, author, isbn, publisher, publishYear, price, status, sellerID, registerDate};
-			
-			bookModel.addRow(row);
-		}
-		
-		searchTable.setModel(bookModel);
+		drawBookTable(bookModel, books.getSearchResult());
 		
 		JScrollPane searchScrollPane = new JScrollPane(searchTable);
 		
@@ -424,26 +383,9 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		// table to show search results
 		// reads search result directly from BookDB instance
 		
-		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Register Date"};
-
-		DefaultTableModel bookModel = new DefaultTableModel(columns, 0);
-
-		for(Book b: books.getSearchResult()) {
-			String title = b.getTitle();
-			String author = b.getAuthor();
-			String isbn = b.getISBN();
-			String publisher = b.getPublisher();
-			String publishYear = b.getPublishYear();
-			String price = b.getPriceString();
-			String status = b.getStatus();
-			String registerDate = b.getRegisterDate().toString();
-			
-			Object row[] = { title, author, isbn, publisher, publishYear, price, status, registerDate};
-			
-			bookModel.addRow(row);
-		}
-		
-		searchTable.setModel(bookModel);
+		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Seller", "Register Date"};
+		bookModel = new DefaultTableModel(columns, 0);
+		drawBookTable(bookModel, books.getSearchResult());
 		
 		JScrollPane searchScrollPane = new JScrollPane(searchTable);
 		
@@ -457,7 +399,6 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		myRegisteredBookPanel.add(backButton);
 		myRegisteredBookPanel.add(new JLabel(" "));
 				
-		
 		contentPane = myRegisteredBookPanel;
 		refreshPane();
 		System.out.println("showing my books view page");
@@ -495,7 +436,8 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		adminMainPanel.add(new JLabel(" "));
 		adminMainPanel.add(new JLabel(" "));
 		adminMainPanel.add(manageUserButton);
-		
+		adminMainPanel.add(new JLabel(" "));
+		adminMainPanel.add(logoutButton);
 		adminMainPanel.add(new JLabel(" "));
 		
 		contentPane = adminMainPanel;
@@ -516,18 +458,9 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		
 		String columns[] = {"ID", "Name", "Password", "Phone Number", "Email", "Activation Status"};
 
-		DefaultTableModel userModel = new DefaultTableModel(columns, 0);
-
-		for(PublicUser u : users.getPublicUserdata()) {
-			String id = u.getUserID();
-			String name = u.getUserName();
-			String pass = u.getUserPassword();
-			String phonenum = u.getUserPhoneNum();
-			String email = u.getUserEmail();
-			String actstatus = Boolean.toString(u.getActivationStatus());
-			Object row[] = {id, name, pass, phonenum, email, actstatus};	
-			userModel.addRow(row);
-		}
+		userModel = new DefaultTableModel(columns, 0);
+		
+		drawUserTable(userModel, users.getPublicUserdata());
 		
 		searchTable.setModel(userModel);
 		
@@ -675,6 +608,14 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 			    JOptionPane.YES_NO_OPTION);
 		return n;
 	}
+	public int showDeleteUserConfirm() {
+		
+		int n = JOptionPane.showConfirmDialog(this,
+			    "Are You Sure You Want To Delete? All of the Registered Books Will Also be Deleted",
+			    "Delete User Confirm",
+			    JOptionPane.YES_NO_OPTION);
+		return n;
+	}
 	public void showUserBuySuccess(String buyerEmail, String sellerEmail) {
 		JOptionPane.showMessageDialog(this, "Email From Your Account <" + buyerEmail + "> Sent To Seller <" + sellerEmail + ">", "buy",JOptionPane.PLAIN_MESSAGE);
 	}
@@ -771,6 +712,14 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	public void addManageUserListener(ActionListener e) {
 		manageUserButton.addActionListener(e);
 	}
+	public void addToggleUserActivationListener(ActionListener e) {
+		toggleUserActivationButton.addActionListener(e);
+	}
+	public void addDeleteUserListener(ActionListener e) {
+		deleteUserButton.addActionListener(e);
+	}
+	
+	
 	
 	
 	public String getID() {
@@ -825,25 +774,109 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	}
 	
 	
-	
-	
-	
-	
 	private void refreshPane() {
 		this.setContentPane(contentPane);
 		revalidate();
 	}
+	private void drawBookTable(TableModel t, ArrayList<Book> list) {
 
+		//bookModel = new DefaultTableModel(columns, 0);
+		bookModel.setRowCount(0);
+		for(Book b: list) {
+			String title = b.getTitle();
+			String author = b.getAuthor();
+			String isbn = b.getISBN();
+			String publisher = b.getPublisher();
+			String publishYear = b.getPublishYear();
+			String price = b.getPriceString();
+			String status = b.getStatus();
+			String registerDate = b.getRegisterDate().toString();
+			String seller = b.getRegisterUserId();
+			
+			Object row[] = { title, author, isbn, publisher, publishYear, price, status, seller, registerDate};
+			
+			((DefaultTableModel) t).addRow(row);
+		}
+		searchTable.setModel(t);
+	}
+	private void updateBookModel(ArrayList<Book> list) {
+		
+		bookModel.setRowCount(0);
+		
+		for(Book b: list) {
+			String title = b.getTitle();
+			String author = b.getAuthor();
+			String isbn = b.getISBN();
+			String publisher = b.getPublisher();
+			String publishYear = b.getPublishYear();
+			String price = b.getPriceString();
+			String status = b.getStatus();
+			String registerDate = b.getRegisterDate().toString();
+			String seller = b.getRegisterUserId();
+			
+			Object row[] = { title, author, isbn, publisher, publishYear, price, status, seller, registerDate};
+			
+			bookModel.addRow(row);
+		}
+	}
+	
+	private void drawUserTable(TableModel t, ArrayList<PublicUser> list) {
 
+		userModel.setRowCount(0);
+		
+		for(PublicUser u : list) {
+			String id = u.getUserID();
+			String name = u.getUserName();
+			String pass = u.getUserPassword();
+			String phonenum = u.getUserPhoneNum();
+			String email = u.getUserEmail();
+			String actstatus = Boolean.toString(u.getActivationStatus());
+			Object row[] = {id, name, pass, phonenum, email, actstatus};	
+			userModel.addRow(row);
+		}
+		searchTable.setModel(t);
+	}
+	private void updateUserModel(ArrayList<PublicUser> list) {
+		
+		userModel.setRowCount(0);
+		for(PublicUser u : list) {
+			String id = u.getUserID();
+			String name = u.getUserName();
+			String pass = u.getUserPassword();
+			String phonenum = u.getUserPhoneNum();
+			String email = u.getUserEmail();
+			String actstatus = Boolean.toString(u.getActivationStatus());
+			Object row[] = {id, name, pass, phonenum, email, actstatus};	
+			userModel.addRow(row);
+		}
+	}
+	
+	
+	
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
-
 		System.out.println("Book List Changed!");
-		System.out.println(evt.getNewValue());
-		
+		if(evt.getPropertyName().equals("removeBook")) {			
+			//showMyRegisteredBookPanel();
+			updateBookModel((ArrayList<Book>) evt.getNewValue());
+			refreshPane();
+		}
+		if(evt.getPropertyName().equals("recentBookChange")) {
+			updateBookModel((ArrayList<Book>) evt.getNewValue());
+			refreshPane();
+		}	
+		if(evt.getPropertyName().equals("toggleUserActivation")) {
+			System.out.println("toggle user");
+			updateUserModel((ArrayList<PublicUser>)evt.getNewValue());
+		}
+		if(evt.getPropertyName().equals("deleteUser")) {
+			System.out.println("delete user");
+			updateUserModel((ArrayList<PublicUser>)evt.getNewValue());
+		}
 	}
-	
 	
 }
 

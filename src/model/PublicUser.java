@@ -60,7 +60,7 @@ public class PublicUser extends User{
 	}
 	
 	public void addToRegisterList(int index, Book b) {
-		Pair<Integer, Book> newBook = new Pair<Integer, Book>(index,b);
+		
 		//registeredBooks.add(newBook);
 	}
 	public void editRegisterListBook(int index, Book b) {
@@ -79,9 +79,8 @@ public class PublicUser extends User{
 	
 	public ArrayList<Book> getRegisteredBook(){
 		ArrayList<Book> regBook = new ArrayList<Book>();
-		//for(Pair<Integer, Book> b : registeredBooks) {
-		//	regBook.add(b.getValue());			
-		//}
+		
+		
 		return regBook;
 	}
 	

@@ -59,9 +59,15 @@ public class MainController {
 		mainMenu.addDeleteBookListener(new onClickDeleteBookButton());
 		mainMenu.addEditBookListener(new onClickEditBookButton());
 		mainMenu.addConfirmEditBookListener(new onClickConfirmEditBookButton());
-		
 		//for admins
+		
+		mainMenu.addManageUserListener(new onClickManageUserButton());
+		mainMenu.addToggleUserActivationListener(new onClickToggleUserActivationButton());
+		mainMenu.addDeleteUserListener(new onClickDeleteUserButton());
+		
 		usedBook.addPropertyChangeListener(mainMenu);
+		usedBookServiceUser.addPropertyChangeListener(mainMenu);
+		
 		
 		// for add book panel
 		startProgram();
@@ -296,8 +302,9 @@ public class MainController {
 			// TODO Auto-generated method stub
 			if(tableSelectIndex >-1) {
 				if(mainMenu.showUserDeleteConfirm() == 0) {
-					int deleteIndex = usedBook.getSearchResult().get(tableSelectIndex).getBookNum();
-					usedBook.removeBook(deleteIndex);
+					// int deleteIndex = usedBook.getSearchResult().get(tableSelectIndex).getBookNum();
+					Book k = usedBook.getSearchResult().get(tableSelectIndex);
+					usedBook.removeBook(k);
 					mainMenu.showGeneralNotification("Book Deleted!");
 				}
 				else {		
@@ -325,7 +332,7 @@ public class MainController {
 			String pyear = mainMenu.getBookPublishYear();
 			String publisher = mainMenu.getBookPublisher();
 			String price = mainMenu.getBookPrice();
-			if(title.isEmpty()) {
+			if(! title.isEmpty()) {
 				
 				if(price.isEmpty()) {
 					price = "-999";
@@ -347,15 +354,12 @@ public class MainController {
 				//check if price contains letter
 				try {
 					intPrice = Integer.parseInt(price);
-					int editIndex = usedBook.getSearchResult().get(tableSelectIndex).getBookNum();
 					Book editInfo = new Book(title, author, isbn, pyear, publisher, intPrice, status, (PublicUser) currentLoginUser);
-					usedBook.editBook(editIndex, editInfo);
-					
+					usedBook.editBook(tableSelectIndex, editInfo);
 					System.out.println("book edited!!");
 					usedBook.printBooks();
 					mainMenu.showGeneralNotification("Book Edited");
-					mainMenu.showUserMainPanel();
-					
+					mainMenu.showMyRegisteredBookPanel();
 				}catch(NumberFormatException ex) {
 					mainMenu.showPriceErrorWarning();
 				}
@@ -449,9 +453,30 @@ public class MainController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			
-			int deleteIndex = usedBookServiceUser.getPublicUserdata().get(tableSelectIndex).getUserNum();
-			usedBookServiceUser.deleteUser(deleteIndex);
+			PublicUser selectedUser = usedBookServiceUser.getPublicUserdata().get(tableSelectIndex);
+			try {
+				if(mainMenu.showDeleteUserConfirm() == 0) {
+					if(selectedUser.getActivationStatus()) {
+						mainMenu.showGeneralNotification("Cannot Delete Activated User");
+					}
+					else {
+						usedBook.searchSeller(selectedUser.getUserID());
+						ArrayList<Book> booksToDelete = new ArrayList<Book>(usedBook.getSearchResult());
+						for(Book b: booksToDelete) {
+							usedBook.removeBook(b);
+							System.out.println("deleting book" + b.getTitle());
+						}
+						usedBookServiceUser.deleteUser(selectedUser);
+						mainMenu.showGeneralNotification("User Deleted!!");
+					}
+				}
+				else{
+					
+				}
+			}
+			catch (ArrayIndexOutOfBoundsException e1) {
+				mainMenu.showGeneralNotification("select user to toggle");
+			}
 		}
 	}
 	class onClickToggleUserActivationButton implements ActionListener{
@@ -459,9 +484,21 @@ public class MainController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			int editIndex = usedBookServiceUser.getPublicUserdata().get(tableSelectIndex).getUserNum();
-			usedBookServiceUser.toggleUserActivation(editIndex);
 			
+			try {
+				PublicUser selectedUser = usedBookServiceUser.getPublicUserdata().get(tableSelectIndex);
+				usedBookServiceUser.toggleUserActivation(selectedUser);
+				if(selectedUser.getActivationStatus()) {
+					// activated
+					mainMenu.showGeneralNotification("user activated!");
+				}
+				else {
+					//deactivated
+					mainMenu.showGeneralNotification("user deactivated!");
+				}
+			}catch (IndexOutOfBoundsException e1) {
+				mainMenu.showGeneralNotification("select user to toggle");
+			}
 		}
 	}
 	

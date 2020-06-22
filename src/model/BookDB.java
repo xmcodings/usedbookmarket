@@ -4,21 +4,18 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class BookDB{
 
 	
 	ArrayList<Book> bookdata = new ArrayList<Book>();
 	ArrayList<Book> searchResult = new ArrayList<Book>();
-	private final PropertyChangeSupport support = new PropertyChangeSupport(this);
+	private PropertyChangeSupport support = new PropertyChangeSupport(this);
 	
 	
 	public BookDB() {
@@ -68,7 +65,6 @@ public class BookDB{
 		}
 	}
 	
-	
 	public void searchAuthor(String searchText) {		
 		searchResult.clear();
 		for(Book book : bookdata) {
@@ -109,9 +105,12 @@ public class BookDB{
 	
 	public void addBook(Book b) {
 		bookdata.add(b);
+		makeRecentBookList();
+		//support.firePropertyChange("addBook", oldList, bookdata);
 	}
 	public void editBook(int index, Book b) {
-		Book editBook = bookdata.get(index);
+		ArrayList<Book> oldList = new ArrayList<Book>(searchResult);
+		Book editBook = searchResult.get(index);
 		editBook.setTitle(b.getTitle());
 		editBook.setAuthor(b.getAuthor());
 		editBook.setISBN(b.getISBN());
@@ -119,6 +118,7 @@ public class BookDB{
 		editBook.setPublisher(b.getPublisher());
 		editBook.setStatus(b.getStatusChar());
 		editBook.setPriceString(b.getPrice());
+		support.firePropertyChange("editBook", oldList, editBook);
 	}
 	
 	
@@ -130,12 +130,18 @@ public class BookDB{
 	}
 	
 	private void makeRecentBookList() {
-
+		ArrayList<Book> oldList = new ArrayList<Book>(searchResult);
 		searchResult.clear();
+		
 		for(int i = bookdata.size()-1; i > bookdata.size()-6; i--) {
+			if(i < 0) {
+				break;
+			}
 			searchResult.add(bookdata.get(i));
 		}
 		Collections.sort(searchResult);
+		
+		support.firePropertyChange("recentBookChange", oldList, searchResult);
 	}
 	
 	public ArrayList<Book> getRecentBookList() {
@@ -149,20 +155,15 @@ public class BookDB{
 		return temp;
 	}
 	
-	public void removeBook(int index) {
-		ArrayList<Book> oldList = new ArrayList<Book>(bookdata);
-		bookdata.remove(index);
-		support.firePropertyChange("remove book", oldList, bookdata);
-		updateBookIndex();
-	}
-	private void updateBookIndex() {
-		for (int i = 0; i < bookdata.size(); i++) {
-			bookdata.get(i).setBookNum(i);
-		}
+	public void removeBook(Book b) {
+		ArrayList<Book> oldList = new ArrayList<Book>(searchResult);
+		bookdata.remove(b);
+		searchResult.remove(b);
+		support.firePropertyChange("removeBook", oldList, searchResult);
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		support.removePropertyChangeListener(listener);
+		support.addPropertyChangeListener(listener);
 	}
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
         support.removePropertyChangeListener(listener);

@@ -36,6 +36,16 @@ public class Book implements Comparable<Book>{
 		this.registerDate = Calendar.getInstance().getTime();
 	}
 	
+	public Book(Book b) {
+		setTitle(b.getTitle());
+		setAuthor(b.getAuthor());
+		this.registerUser = b.getRegisterUser();
+		setISBN(b.getISBN());
+		setPublisher(b.getPublisher());
+		setPublishYear(b.getPublishYear());
+		setStatus(b.getStatusChar());
+		setPriceString(b.getPrice());
+	}
 	
 	public String getAuthor() {
 		return author;
@@ -159,6 +169,10 @@ public class Book implements Comparable<Book>{
 	}
 	public int getBookNum() {
 		return bookNum;
+	}
+	
+	public PublicUser getRegisterUser() {
+		return registerUser;
 	}
 	
 	// default sort

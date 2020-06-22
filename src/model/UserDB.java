@@ -1,16 +1,19 @@
 package model;
 
-import java.beans.PropertyChangeEvent;
+
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
 import javafx.util.Pair;
 
-public class UserDB implements PropertyChangeListener{
+public class UserDB{
 
 	private ArrayList<User> userdata = new ArrayList<User>();
 	private ArrayList<Pair<String, String>> adminInfoList = new ArrayList<Pair<String,String>>();
 	private User loginUser;
+	private PropertyChangeSupport support = new PropertyChangeSupport(this);
+	
 	
 	public UserDB() {
 		
@@ -36,8 +39,9 @@ public class UserDB implements PropertyChangeListener{
 	}
 	
 	public void addUserData(User user) {
-		
+		ArrayList<User> oldData = new ArrayList<User>(userdata);
 		userdata.add(user);
+		support.firePropertyChange("addUser", oldData, userdata);
 	}
 	
 	
@@ -61,34 +65,41 @@ public class UserDB implements PropertyChangeListener{
 		return false;
 	}
 	
-	public void toggleUserActivation(int index) {
-		((PublicUser)userdata.get(index)).toggleActivation();
-		
+	public void toggleUserActivation(PublicUser user) {
+		ArrayList<User> oldData = new ArrayList<User>(userdata);
+		user.toggleActivation();
+		support.firePropertyChange("toggleUserActivation", oldData, getPublicUserdata());
 	}
 	
-	public void deleteUser(int index) {
-		userdata.remove(index);
-		updateUserIndex();
-	}
-	
-	private void updateUserIndex() {
-		for(int i = 0; i < userdata.size(); i++) {
-			userdata.get(i).setUserNum(i);
+	public boolean deleteUser(PublicUser user) {
+		if(user.getActivationStatus()) {
+			return false;
+		}
+		else {
+			ArrayList<User> oldData = new ArrayList<User>(userdata);
+			userdata.remove(user);
+			support.firePropertyChange("deleteUser", oldData, getPublicUserdata());
+			return true;
 		}
 	}
 	public void makeAdmin(User user) {
 		adminInfoList.add(new Pair<String, String>(user.getUserID(), user.getUserPassword()));
+		user.isAdmin = true;
 	}
 	
 	// 0: login fail, 1: login user, 2: login admin
 	public int loginAuth(String id, String pass) {
 		for(User user : userdata) {
 			if(user.getUserID().equals(id) && user.getUserPassword().equals(pass)) {
-				loginUser = user;
 				if(user.getIsAdmin()) {
+					loginUser = user;
 					return 2;
 				}
-				return 1;
+				else {
+					if(((PublicUser)user).getActivationStatus()) {
+						return 1;	
+					}
+				}
 			}
 		}
 		return 0;
@@ -103,11 +114,11 @@ public class UserDB implements PropertyChangeListener{
 		return loginUser;
 	}
 
-	
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-		
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		support.addPropertyChangeListener(listener);
 	}
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+        support.removePropertyChangeListener(listener);
+    }
 
 }
