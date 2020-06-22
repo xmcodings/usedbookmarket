@@ -25,18 +25,13 @@ public class UsedBookMarketPlace {
 		Admin admin = new Admin("admin", "nayana"); 
 		marketUsers.addUserData(admin);  // initialize first admin with id: admin and password: nayana
 		
-		
-		
 		// test codes//
 		PublicUser jinwon = new PublicUser("jin", "won", "jinwon", "sdfsdf", "sdfsdf");
 		marketUsers.addUserData(jinwon);
 		
 		MainMenuGUI mainGUI = new MainMenuGUI(marketUsers, marketBooks);
-		
 		MainController marketMainController = new MainController(mainGUI, marketUsers, marketBooks);
-		
 		mainGUI.setVisible(true);
-		
 	}
 	
 

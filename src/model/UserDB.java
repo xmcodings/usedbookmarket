@@ -1,27 +1,34 @@
 package model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.util.Pair;
 
-public class UserDB implements Observable{
+public class UserDB implements PropertyChangeListener{
 
 	private ArrayList<User> userdata = new ArrayList<User>();
-	
 	private ArrayList<Pair<String, String>> adminInfoList = new ArrayList<Pair<String,String>>();
-	
 	private User loginUser;
 	
 	public UserDB() {
 		
-	
+		
 	}
 	
-	
-	public ArrayList<User> getUserdata() {
+	public ArrayList<User> getAllUserdata() {
 		return userdata;
+	}
+	
+	public ArrayList<PublicUser> getPublicUserdata() {
+		ArrayList<PublicUser> temp = new ArrayList<PublicUser>();
+		for(User u : userdata) {
+			if(! u.getIsAdmin()) {
+				temp.add((PublicUser)u);
+			}
+		}
+		return temp;
 	}
 
 	public void setUserdata(ArrayList<User> userdata) {
@@ -44,7 +51,6 @@ public class UserDB implements Observable{
 		}
 		return true;
 	}
-	
 	public boolean checkAdmin(User user) {
 		
 		for(Pair<String, String> adminInfo : adminInfoList) {
@@ -54,7 +60,22 @@ public class UserDB implements Observable{
 		}
 		return false;
 	}
-
+	
+	public void toggleUserActivation(int index) {
+		((PublicUser)userdata.get(index)).toggleActivation();
+		
+	}
+	
+	public void deleteUser(int index) {
+		userdata.remove(index);
+		updateUserIndex();
+	}
+	
+	private void updateUserIndex() {
+		for(int i = 0; i < userdata.size(); i++) {
+			userdata.get(i).setUserNum(i);
+		}
+	}
 	public void makeAdmin(User user) {
 		adminInfoList.add(new Pair<String, String>(user.getUserID(), user.getUserPassword()));
 	}
@@ -74,29 +95,19 @@ public class UserDB implements Observable{
 	}
 	
 	public void printUserList() {
-		
 		for(User user : userdata) {
-		
 			System.out.println("id : " + user.getUserID() + " pass : " + user.getUserPassword());
-			
 		}
 	}
-
-
-	@Override
-	public void addListener(InvalidationListener arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeListener(InvalidationListener arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public User getLoginUser() {
 		return loginUser;
 	}
+
 	
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

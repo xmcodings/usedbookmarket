@@ -23,12 +23,14 @@ public class MainController {
 	BookDB usedBook; // = new BookDB();
 	MainMenuGUI mainMenu;
 	User currentLoginUser;
-	Book userBuySelectionBook = null;
+	Book userTableSelectionBook = null;
+	int tableSelectIndex = -1;
 	
 	public MainController(MainMenuGUI view, UserDB userData, BookDB bookData) {
 		this.mainMenu = view;
 		this.usedBookServiceUser = userData;
 		this.usedBook = bookData;
+		
 		
 		// for main menu
 		mainMenu.addLoginActionListener(new onClickLoginButton());
@@ -52,9 +54,16 @@ public class MainController {
 		mainMenu.addBuyBookActionListener(new onClickBuyBookButton());
 		mainMenu.addSearchTableListener(new onListSelect());
 		
-		// for add book panel
-
 		
+		mainMenu.addMyRegisteredBookActionListener(new onClickMyRegisteredBookButton());
+		mainMenu.addDeleteBookListener(new onClickDeleteBookButton());
+		mainMenu.addEditBookListener(new onClickEditBookButton());
+		mainMenu.addConfirmEditBookListener(new onClickConfirmEditBookButton());
+		
+		//for admins
+		usedBook.addPropertyChangeListener(mainMenu);
+		
+		// for add book panel
 		startProgram();
 	}
 	
@@ -83,7 +92,6 @@ public class MainController {
 		return usedBookServiceUser.loginAuth(id, pass);
 	}
 	
-	
 	// inner onclick event class
 	
 	class onClickLoginButton implements ActionListener{
@@ -102,7 +110,8 @@ public class MainController {
 			{
 				System.out.println("login success <admin>");
 				// should go to admin view
-				
+				currentLoginUser = usedBookServiceUser.getLoginUser();
+				mainMenu.showAdminMainPanel();
 			}
 			else{ // login fail
 				System.out.println("login fail");
@@ -148,7 +157,12 @@ public class MainController {
 			}
 			else {
 				usedBook.searchTitle(searchText);
-				mainMenu.showSearchResultPanel();				
+				if(currentLoginUser.getIsAdmin()) {
+					mainMenu.showSearchResultAdminPanel();
+				}
+				else {
+					mainMenu.showSearchResultPanel();				
+				}
 			}
 
 		}
@@ -164,7 +178,12 @@ public class MainController {
 			}
 			else {
 				usedBook.searchAuthor(searchText);
-				mainMenu.showSearchResultPanel();
+				if(currentLoginUser.getIsAdmin()) {
+					mainMenu.showSearchResultAdminPanel();
+				}
+				else {
+					mainMenu.showSearchResultPanel();				
+				}
 			}
 		}
 	}
@@ -179,7 +198,12 @@ public class MainController {
 			}
 			else {
 				usedBook.searchISBN(searchText);
-				mainMenu.showSearchResultPanel();
+				if(currentLoginUser.getIsAdmin()) {
+					mainMenu.showSearchResultAdminPanel();
+				}
+				else {
+					mainMenu.showSearchResultPanel();				
+				}
 			}
 		}
 	}
@@ -194,7 +218,12 @@ public class MainController {
 			}
 			else {
 				usedBook.searchSeller(searchText);
-				mainMenu.showSearchResultPanel();
+				if(currentLoginUser.getIsAdmin()) {
+					mainMenu.showSearchResultAdminPanel();
+				}
+				else {
+					mainMenu.showSearchResultPanel();				
+				}
 			}
 		}
 	}
@@ -213,9 +242,10 @@ public class MainController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(userBuySelectionBook != null) {
+			if(tableSelectIndex > -1) {
 				if(mainMenu.showUserBuyConfirm() == 0) {
-					mainMenu.showUserBuySuccess(((PublicUser)currentLoginUser).getUserEmail(), userBuySelectionBook.getRegisterUserEmail()); // success code 0
+					userTableSelectionBook = usedBook.getSearchResult().get(tableSelectIndex);
+					mainMenu.showUserBuySuccess(((PublicUser)currentLoginUser).getUserEmail(), userTableSelectionBook.getRegisterUserEmail()); // success code 0
 				}
 				else {
 					
@@ -241,7 +271,12 @@ public class MainController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			mainMenu.showUserMainPanel();	
+			if(currentLoginUser.getIsAdmin()) {
+				mainMenu.showAdminMainPanel();
+			}
+			else {
+				mainMenu.showUserMainPanel();	
+			}
 		}
 	}
 	
@@ -250,9 +285,87 @@ public class MainController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			
+			usedBook.searchSeller(currentLoginUser.getUserID());
+			mainMenu.showMyRegisteredBookPanel();
 		}
 	}
+	class onClickDeleteBookButton implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(tableSelectIndex >-1) {
+				if(mainMenu.showUserDeleteConfirm() == 0) {
+					int deleteIndex = usedBook.getSearchResult().get(tableSelectIndex).getBookNum();
+					usedBook.removeBook(deleteIndex);
+					mainMenu.showGeneralNotification("Book Deleted!");
+				}
+				else {		
+				}
+			}
+		}
+	}
+	class onClickEditBookButton implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			usedBook.searchSeller(currentLoginUser.getUserID());
+			mainMenu.showEditBookPanel(usedBook.getSearchResult().get(tableSelectIndex));		
+		}
+	}
+	class onClickConfirmEditBookButton implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			String title = mainMenu.getBookTitle();
+			String author = mainMenu.getBookAuthor();
+			String isbn = mainMenu.getBookISBN();
+			String pyear = mainMenu.getBookPublishYear();
+			String publisher = mainMenu.getBookPublisher();
+			String price = mainMenu.getBookPrice();
+			if(title.isEmpty()) {
+				
+				if(price.isEmpty()) {
+					price = "-999";
+				}
+				int intPrice;
+				char status = mainMenu.getBookStatus();
+				
+				if(status == 'a') {
+					status = 'a';
+				}
+				if(status == 'b') {
+					status = 'b';
+				}
+				if(status == 'c') {
+					status = 'c';
+				} 
+				// convert to model implementation
+				
+				//check if price contains letter
+				try {
+					intPrice = Integer.parseInt(price);
+					int editIndex = usedBook.getSearchResult().get(tableSelectIndex).getBookNum();
+					Book editInfo = new Book(title, author, isbn, pyear, publisher, intPrice, status, (PublicUser) currentLoginUser);
+					usedBook.editBook(editIndex, editInfo);
+					
+					System.out.println("book edited!!");
+					usedBook.printBooks();
+					mainMenu.showGeneralNotification("Book Edited");
+					mainMenu.showUserMainPanel();
+					
+				}catch(NumberFormatException ex) {
+					mainMenu.showPriceErrorWarning();
+				}
+			}
+			else {
+				mainMenu.showGeneralNotification("Title Must be Typed!");
+			}
+		}
+	}
+	
 	class onClickMyTransactionButton implements ActionListener{
 
 		@Override
@@ -282,39 +395,76 @@ public class MainController {
 			String pyear = mainMenu.getBookPublishYear();
 			String publisher = mainMenu.getBookPublisher();
 			String price = mainMenu.getBookPrice();
-
-			if(price.isEmpty()) {
-				price = "-999";
+			if(title.isEmpty()) {
+				mainMenu.showGeneralNotification("Title Must be Typed");
 			}
-			int intPrice;
-			char status = mainMenu.getBookStatus();
-			
-			if(status == 'a') {
-				status = 'a';
-			}
-			if(status == 'b') {
-				status = 'b';
-			}
-			if(status == 'c') {
-				status = 'c';
-			} 
-			// convert to model implementation
-			
-			
-			//check if price contains letter
-			try {
-				intPrice = Integer.parseInt(price);
-				usedBook.addBook(new Book(title, author, isbn, pyear, publisher, intPrice, status, (PublicUser) currentLoginUser));
-				System.out.println("book added!!");
-				usedBook.printBooks();
-				mainMenu.showBookRegisterSuccess();
-				mainMenu.showUserMainPanel();
+			else {
+				if(price.isEmpty()) {
+					price = "-999";
+				}	
 				
-			}catch(NumberFormatException ex) {
-				mainMenu.showPriceErrorWarning();
+				int intPrice;
+				char status = mainMenu.getBookStatus();
+				
+				if(status == 'a') {
+					status = 'a';
+				}
+				if(status == 'b') {
+					status = 'b';
+				}
+				if(status == 'c') {
+					status = 'c';
+				} 
+				// convert to model implementation
+				
+				
+				//check if price contains letter
+				try {
+					intPrice = Integer.parseInt(price);
+					Book newbook = new Book(title, author, isbn, pyear, publisher, intPrice, status, (PublicUser) currentLoginUser);
+					usedBook.addBook(newbook);
+					System.out.println("book added!!");
+					//((PublicUser)currentLoginUser).addToRegisterList(newbook);
+					usedBook.printBooks();
+					mainMenu.showBookRegisterSuccess();
+					mainMenu.showUserMainPanel();
+					
+				}catch(NumberFormatException ex) {
+					mainMenu.showPriceErrorWarning();
+				}
 			}
 		}
 	}
+	
+	class onClickManageUserButton implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			mainMenu.showUserManagePanel();
+		}
+	}
+	class onClickDeleteUserButton implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			
+			int deleteIndex = usedBookServiceUser.getPublicUserdata().get(tableSelectIndex).getUserNum();
+			usedBookServiceUser.deleteUser(deleteIndex);
+		}
+	}
+	class onClickToggleUserActivationButton implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			int editIndex = usedBookServiceUser.getPublicUserdata().get(tableSelectIndex).getUserNum();
+			usedBookServiceUser.toggleUserActivation(editIndex);
+			
+		}
+	}
+	
 	
 	class onListSelect implements ListSelectionListener{
 
@@ -323,11 +473,17 @@ public class MainController {
 			// TODO Auto-generated method stub
 			int tableIndex = ((ListSelectionModel)e.getSource()).getAnchorSelectionIndex();
 			if(tableIndex > -1) {
-				userBuySelectionBook = usedBook.getSearchResult().get(tableIndex);			
+				System.out.println(tableIndex);
+				tableSelectIndex = tableIndex;
 			}
 			else {
-				// 
 			}
+//			if(tableIndex > -1) {
+//				userTableSelectionBook = usedBook.getSearchResult().get(tableIndex);			
+//			}
+//			else {
+				// 
+//			}
 		}
 	}	
 }

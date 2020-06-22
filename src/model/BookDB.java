@@ -1,21 +1,25 @@
 package model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-
-public class BookDB implements Observable{
+public class BookDB{
 
 	
 	ArrayList<Book> bookdata = new ArrayList<Book>();
 	ArrayList<Book> searchResult = new ArrayList<Book>();
-	ArrayList<Book> recentList = new ArrayList<Book>();
+	private final PropertyChangeSupport support = new PropertyChangeSupport(this);
+	
 	
 	public BookDB() {
 		
@@ -105,8 +109,18 @@ public class BookDB implements Observable{
 	
 	public void addBook(Book b) {
 		bookdata.add(b);
-		addToRecentBookList(b);
 	}
+	public void editBook(int index, Book b) {
+		Book editBook = bookdata.get(index);
+		editBook.setTitle(b.getTitle());
+		editBook.setAuthor(b.getAuthor());
+		editBook.setISBN(b.getISBN());
+		editBook.setPublishYear(b.getPublishYear());		
+		editBook.setPublisher(b.getPublisher());
+		editBook.setStatus(b.getStatusChar());
+		editBook.setPriceString(b.getPrice());
+	}
+	
 	
 	public void printBooks() {
 		
@@ -115,29 +129,43 @@ public class BookDB implements Observable{
 		}
 	}
 	
-	private void addToRecentBookList(Book b) {
-		if(recentList.size() > 5) {
-			recentList.remove(0);
+	private void makeRecentBookList() {
+
+		searchResult.clear();
+		for(int i = bookdata.size()-1; i > bookdata.size()-6; i--) {
+			searchResult.add(bookdata.get(i));
 		}
-		recentList.add(b);
-	}
-	public ArrayList<Book> getRecentBookList(){
-		return recentList;
+		Collections.sort(searchResult);
 	}
 	
-	@Override
-	public void addListener(InvalidationListener listener) {
-		// TODO Auto-generated method stub
+	public ArrayList<Book> getRecentBookList() {
+		makeRecentBookList();
+		return searchResult;
+	}
+	public ArrayList<Book> getSortByDate(ArrayList<Book> toSortArray) {
 		
-	}
-
-	@Override
-	public void removeListener(InvalidationListener listener) {
-		// TODO Auto-generated method stub
-		
+		ArrayList<Book> temp = toSortArray;
+		Collections.sort(temp);
+		return temp;
 	}
 	
+	public void removeBook(int index) {
+		ArrayList<Book> oldList = new ArrayList<Book>(bookdata);
+		bookdata.remove(index);
+		support.firePropertyChange("remove book", oldList, bookdata);
+		updateBookIndex();
+	}
+	private void updateBookIndex() {
+		for (int i = 0; i < bookdata.size(); i++) {
+			bookdata.get(i).setBookNum(i);
+		}
+	}
 	
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		support.removePropertyChangeListener(listener);
+	}
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+        support.removePropertyChangeListener(listener);
+    }
 	
-
 }

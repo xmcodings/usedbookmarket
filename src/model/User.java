@@ -9,7 +9,13 @@ public abstract class User {
 	private String userID;
 	private String userPassword;
 	protected boolean isAdmin;
+	private int userNum;
+	private static int totalUser = 0;
 	
+	public User() {
+		this.userNum = totalUser;
+		totalUser++;
+	}
 	
 	public String getUserID() {
 		return userID;
@@ -28,6 +34,14 @@ public abstract class User {
 	
 	public boolean getIsAdmin() {
 		return isAdmin;
+	}
+
+	public int getUserNum() {
+		return userNum;
+	}
+
+	public void setUserNum(int userNum) {
+		this.userNum = userNum;
 	}
 	
 	

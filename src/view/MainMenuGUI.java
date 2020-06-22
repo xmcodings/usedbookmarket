@@ -2,12 +2,10 @@ package view;
 
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -15,30 +13,22 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-import javafx.event.ActionEvent;
 import model.Book;
 import model.BookDB;
+import model.PublicUser;
 import model.UserDB;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.TextField;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
-public class MainMenuGUI extends JFrame implements Observer {
+public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -54,6 +44,10 @@ public class MainMenuGUI extends JFrame implements Observer {
 	private JPanel adminMainPanel;
 	private JPanel searchResultPanel;
 	private JPanel registerBookPanel;
+	private JPanel myRegisteredBookPanel;
+	private JPanel editBookPanel;
+	private JPanel userManagePanel;
+	
 	
 	private JLabel welcomMessage;
 	
@@ -74,11 +68,20 @@ public class MainMenuGUI extends JFrame implements Observer {
 	private JButton myProfileButton;
 	private JButton logoutButton;
 	
+	private JButton editBookButton;
+	private JButton deleteBookButton;
+	
+	private JButton confirmEditBookButton;
 	
 	private JButton buyBookButton;
 	private JButton sellBookButton;
 	
 	private JButton backButton;
+	// for admins
+	private JButton manageUserButton;
+	private JButton deleteUserButton;
+	private JButton toggleUserActivationButton;
+	
 	
 	private JTextField idText;
 	private JTextField passText;
@@ -101,10 +104,8 @@ public class MainMenuGUI extends JFrame implements Observer {
 	
 	private JLabel loginIDLabel;
 	private JLabel loginPasswordLabel;
-	
-	
-	
-	
+
+
 	public MainMenuGUI(UserDB systemUsers, BookDB marketBooks) {
 		
 		setTitle("Used Book Marketplace");
@@ -113,6 +114,7 @@ public class MainMenuGUI extends JFrame implements Observer {
 		
 		this.users = systemUsers;
 		this.books = marketBooks;
+		
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -137,6 +139,17 @@ public class MainMenuGUI extends JFrame implements Observer {
 		                                             
 		buyBookButton 		= new JButton("Buy");
 		
+		editBookButton = new JButton("edit");
+		deleteBookButton = new JButton("delete");
+		confirmEditBookButton = new JButton("edit confirm");
+		
+		
+		manageUserButton = new JButton("Manage Users");
+		toggleUserActivationButton = new JButton("Toggle Activation");
+		deleteUserButton = new JButton("Delete User");
+		
+		
+		
 		// tabel init
 		searchTable = new JTable();
 		searchTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -154,11 +167,11 @@ public class MainMenuGUI extends JFrame implements Observer {
 		idText = new JTextField();
 		passText = new JTextField();
 		
+		// property change listener....
 		
 		
 		this.setContentPane(contentPane);
 	}
-	
 	
 	public void showMainLogin() {
 		
@@ -333,9 +346,6 @@ public class MainMenuGUI extends JFrame implements Observer {
 		
 		searchTable.setModel(bookModel);
 		
-		
-		
-		
 		JScrollPane searchScrollPane = new JScrollPane(searchTable);
 		
 		searchResultPanel.add(searchScrollPane);
@@ -351,6 +361,194 @@ public class MainMenuGUI extends JFrame implements Observer {
 		refreshPane();
 		System.out.println("showing search result view page");
 	}
+	public void showSearchResultAdminPanel() {
+		
+		searchResultPanel = new JPanel();
+		searchResultPanel.setLayout(new BoxLayout(searchResultPanel, BoxLayout.PAGE_AXIS));
+		
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(new JLabel("----- Search Results -----"));
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(new JLabel(" "));
+		// table to show search results
+		// reads search result directly from BookDB instance
+		
+		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Seller", "Register Date"};
+
+		DefaultTableModel bookModel = new DefaultTableModel(columns, 0);
+
+		for(Book b: books.getSearchResult()) {
+			String title = b.getTitle();
+			String author = b.getAuthor();
+			String isbn = b.getISBN();
+			String publisher = b.getPublisher();
+			String publishYear = b.getPublishYear();
+			String price = b.getPriceString();
+			String status = b.getStatus();
+			String sellerID = b.getRegisterUserId();
+			String registerDate = b.getRegisterDate().toString();
+			
+			Object row[] = { title, author, isbn, publisher, publishYear, price, status, sellerID, registerDate};
+			
+			bookModel.addRow(row);
+		}
+		
+		searchTable.setModel(bookModel);
+		
+		JScrollPane searchScrollPane = new JScrollPane(searchTable);
+		
+		searchResultPanel.add(searchScrollPane);
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(deleteBookButton);
+		searchResultPanel.add(new JLabel(" "));
+		searchResultPanel.add(backButton);
+		searchResultPanel.add(new JLabel(" "));
+				
+		
+		contentPane = searchResultPanel;
+		refreshPane();
+		System.out.println("showing search result view page");
+	}
+	
+	public void showMyRegisteredBookPanel() {
+		
+		myRegisteredBookPanel = new JPanel();
+		myRegisteredBookPanel.setLayout(new BoxLayout(myRegisteredBookPanel, BoxLayout.PAGE_AXIS));
+		myRegisteredBookPanel.add(new JLabel(" "));
+		myRegisteredBookPanel.add(new JLabel(" "));
+		myRegisteredBookPanel.add(new JLabel("----- My Registered Books -----"));
+		myRegisteredBookPanel.add(new JLabel(" "));
+		myRegisteredBookPanel.add(new JLabel(" "));
+		// table to show search results
+		// reads search result directly from BookDB instance
+		
+		String columns[] = {"Title", "Author", "ISBN", "Publisher", "Publish Date", "Price", "Status", "Register Date"};
+
+		DefaultTableModel bookModel = new DefaultTableModel(columns, 0);
+
+		for(Book b: books.getSearchResult()) {
+			String title = b.getTitle();
+			String author = b.getAuthor();
+			String isbn = b.getISBN();
+			String publisher = b.getPublisher();
+			String publishYear = b.getPublishYear();
+			String price = b.getPriceString();
+			String status = b.getStatus();
+			String registerDate = b.getRegisterDate().toString();
+			
+			Object row[] = { title, author, isbn, publisher, publishYear, price, status, registerDate};
+			
+			bookModel.addRow(row);
+		}
+		
+		searchTable.setModel(bookModel);
+		
+		JScrollPane searchScrollPane = new JScrollPane(searchTable);
+		
+		myRegisteredBookPanel.add(searchScrollPane);
+		myRegisteredBookPanel.add(new JLabel(" "));
+		myRegisteredBookPanel.add(new JLabel(" "));
+		myRegisteredBookPanel.add(editBookButton);
+		myRegisteredBookPanel.add(new JLabel(" "));
+		myRegisteredBookPanel.add(deleteBookButton);
+		myRegisteredBookPanel.add(new JLabel(" "));
+		myRegisteredBookPanel.add(backButton);
+		myRegisteredBookPanel.add(new JLabel(" "));
+				
+		
+		contentPane = myRegisteredBookPanel;
+		refreshPane();
+		System.out.println("showing my books view page");
+		
+	}
+	
+	public void showAdminMainPanel() {
+		
+		adminMainPanel = new JPanel();
+		
+		adminMainPanel.setLayout(new BoxLayout(adminMainPanel, BoxLayout.PAGE_AXIS));
+		
+		adminMainPanel.add(new JLabel("Hello admin user <" + users.getLoginUser().getUserID() +">!  Welcome Back!"));
+		adminMainPanel.add(new JLabel(" "));
+		
+		adminMainPanel.add(new JLabel(" "));
+		adminMainPanel.add(new JLabel("----- Search What You Want!! -----"));
+		adminMainPanel.add(new JLabel(" "));
+		
+		searchText = new JTextField();
+		
+		adminMainPanel.add(searchText);
+		
+		JPanel searchButtonPanel = new JPanel();
+		searchButtonPanel.setLayout(new FlowLayout());
+		searchButtonPanel.add(searchTitleButton);
+		searchButtonPanel.add(searchAuthorButton);
+		searchButtonPanel.add(searchISBNButton);
+		searchButtonPanel.add(searchSellerButton);
+		
+		adminMainPanel.add(searchButtonPanel);
+		adminMainPanel.add(new JLabel(" "));
+		adminMainPanel.add(new JLabel(" "));
+		adminMainPanel.add(new JLabel("----- Admin Space -----"));
+		adminMainPanel.add(new JLabel(" "));
+		adminMainPanel.add(new JLabel(" "));
+		adminMainPanel.add(manageUserButton);
+		
+		adminMainPanel.add(new JLabel(" "));
+		
+		contentPane = adminMainPanel;
+		refreshPane();
+		System.out.println("showing admin page");
+	}
+	public void showUserManagePanel() {
+		
+		userManagePanel = new JPanel();
+		userManagePanel.setLayout(new BoxLayout(userManagePanel, BoxLayout.PAGE_AXIS));
+		userManagePanel.add(new JLabel(" "));
+		userManagePanel.add(new JLabel(" "));
+		userManagePanel.add(new JLabel("----- User List -----"));
+		userManagePanel.add(new JLabel(" "));
+		userManagePanel.add(new JLabel(" "));
+		// table to show search results
+		// reads search result directly from BookDB instance
+		
+		String columns[] = {"ID", "Name", "Password", "Phone Number", "Email", "Activation Status"};
+
+		DefaultTableModel userModel = new DefaultTableModel(columns, 0);
+
+		for(PublicUser u : users.getPublicUserdata()) {
+			String id = u.getUserID();
+			String name = u.getUserName();
+			String pass = u.getUserPassword();
+			String phonenum = u.getUserPhoneNum();
+			String email = u.getUserEmail();
+			String actstatus = Boolean.toString(u.getActivationStatus());
+			Object row[] = {id, name, pass, phonenum, email, actstatus};	
+			userModel.addRow(row);
+		}
+		
+		searchTable.setModel(userModel);
+		
+		JScrollPane searchScrollPane = new JScrollPane(searchTable);
+		
+		userManagePanel.add(searchScrollPane);
+		userManagePanel.add(new JLabel(" "));
+		userManagePanel.add(new JLabel(" "));
+		userManagePanel.add(toggleUserActivationButton);
+		userManagePanel.add(new JLabel(" "));
+		userManagePanel.add(deleteUserButton);
+		userManagePanel.add(new JLabel(" "));
+		userManagePanel.add(backButton);
+		userManagePanel.add(new JLabel(" "));
+		
+		contentPane = userManagePanel;
+		refreshPane();
+		System.out.println("showing user manage view page");
+		
+	}
+	
 	
 	public void showRegisterBookPanel() {
 		
@@ -374,7 +572,6 @@ public class MainMenuGUI extends JFrame implements Observer {
 		
 		
 		registerBookPanel.setLayout(new BoxLayout(registerBookPanel, BoxLayout.PAGE_AXIS));
-		
 		registerBookPanel.add(new JLabel("Please add Book Information"));
 		registerBookPanel.add(new JLabel(" "));
 		registerBookPanel.add(new JLabel("Book Title"));
@@ -409,6 +606,61 @@ public class MainMenuGUI extends JFrame implements Observer {
 		System.out.println("showing register book view page");
 		
 	}
+	public void showEditBookPanel(Book editBook) {
+		
+		editBookPanel = new JPanel();
+		
+		bookTitleText = new JTextField(editBook.getTitle());
+		bookAuthorText = new JTextField(editBook.getAuthor());
+		bookISBNText = new JTextField(editBook.getISBN());
+		bookPublishYearText = new JTextField(editBook.getPublishYear());
+		bookPublisherText = new JTextField(editBook.getPublisher());
+		bookPriceText = new JTextField(editBook.getPriceString());
+		
+		excellent = new JRadioButton("Excellent");
+		good = new JRadioButton("Good");
+		fair = new JRadioButton("Fair");
+		
+		ButtonGroup bookStatusButtonGroup = new ButtonGroup();
+		bookStatusButtonGroup.add(excellent);
+		bookStatusButtonGroup.add(good);
+		bookStatusButtonGroup.add(fair);
+		
+		editBookPanel.setLayout(new BoxLayout(editBookPanel, BoxLayout.PAGE_AXIS));
+		editBookPanel.add(new JLabel("Please add Book Information"));
+		editBookPanel.add(new JLabel(" "));
+		editBookPanel.add(new JLabel("Book Title"));
+		editBookPanel.add(bookTitleText);
+		editBookPanel.add(new JLabel(" "));
+		editBookPanel.add(new JLabel("Book Author"));
+		editBookPanel.add(bookAuthorText);
+		editBookPanel.add(new JLabel(" "));
+		editBookPanel.add(new JLabel("Book ISBN"));
+		editBookPanel.add(bookISBNText);
+		editBookPanel.add(new JLabel(" "));
+		editBookPanel.add(new JLabel("Book Publish Year"));
+		editBookPanel.add(bookPublishYearText);
+		editBookPanel.add(new JLabel(" "));
+		editBookPanel.add(new JLabel("Book Publisher"));
+		editBookPanel.add(bookPublisherText);
+		editBookPanel.add(new JLabel(" "));
+		editBookPanel.add(new JLabel("Book Status"));
+		editBookPanel.add(excellent);
+		editBookPanel.add(good);
+		editBookPanel.add(fair);
+		editBookPanel.add(new JLabel(" "));
+		editBookPanel.add(new JLabel("Book Price"));
+		editBookPanel.add(bookPriceText);
+		editBookPanel.add(new JLabel(" "));
+		editBookPanel.add(new JLabel(" "));
+		editBookPanel.add(confirmEditBookButton);
+		editBookPanel.add(new JLabel(" "));
+		
+		contentPane = editBookPanel;
+		refreshPane();
+		System.out.println("showing edit book view page");
+	}
+	
 	public void showBookRegisterSuccess() {
 		JOptionPane.showMessageDialog(this, "Book Registered!", "Book Register Success", JOptionPane.PLAIN_MESSAGE);
 	}
@@ -443,6 +695,16 @@ public class MainMenuGUI extends JFrame implements Observer {
 	}
 	public void showBookNotSelectedWarning() {
 		JOptionPane.showMessageDialog(this, "Book Not Selected!");
+	}
+	public int showUserDeleteConfirm() {
+		int n = JOptionPane.showConfirmDialog(this,
+			    "Do You Want To Delete This Book?",
+			    "Delete Confirm",
+			    JOptionPane.YES_NO_OPTION);
+		return n;
+	}
+	public void showGeneralNotification(String message) {
+		JOptionPane.showMessageDialog(this, message, "Notification", JOptionPane.PLAIN_MESSAGE);
 	}
 	
 	
@@ -497,6 +759,19 @@ public class MainMenuGUI extends JFrame implements Observer {
 	public void addSearchTableListener(ListSelectionListener l) {
 		selectModel.addListSelectionListener(l);
 	}
+	public void addDeleteBookListener(ActionListener e) {
+		deleteBookButton.addActionListener(e);
+	}
+	public void addEditBookListener(ActionListener e) {
+		editBookButton.addActionListener(e);
+	}
+	public void addConfirmEditBookListener(ActionListener e) {
+		confirmEditBookButton.addActionListener(e);
+	}
+	public void addManageUserListener(ActionListener e) {
+		manageUserButton.addActionListener(e);
+	}
+	
 	
 	public String getID() {
 		return idText.getText();
@@ -560,15 +835,16 @@ public class MainMenuGUI extends JFrame implements Observer {
 	}
 
 
-	
-	
 	@Override
-	public void update(Observable o, Object arg) {
+	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
-	
-		
+
+		System.out.println("Book List Changed!");
+		System.out.println(evt.getNewValue());
 		
 	}
+	
+	
 }
 
 
