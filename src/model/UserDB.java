@@ -14,9 +14,7 @@ public class UserDB{
 	private User loginUser;
 	private PropertyChangeSupport support = new PropertyChangeSupport(this);
 	
-	
 	public UserDB() {
-		
 		
 	}
 	
@@ -33,9 +31,14 @@ public class UserDB{
 		}
 		return temp;
 	}
-
-	public void setUserdata(ArrayList<User> userdata) {
-		this.userdata = userdata;
+	public ArrayList<Admin> getAdminUserdata(){
+		ArrayList<Admin> temp = new ArrayList<Admin>();
+		for(User u : userdata) {
+			if(u.getIsAdmin()) {
+				temp.add((Admin)u);
+			}
+		}
+		return temp;
 	}
 	
 	public void addUserData(User user) {
@@ -47,7 +50,6 @@ public class UserDB{
 	
 	// return true if it passes duplicate test
 	public boolean checkDuplicate(User checkUser) {
-		
 		for(User user : userdata) {
 			if(user.getUserID().equals(checkUser.getUserID())) {
 				return false;
@@ -82,7 +84,7 @@ public class UserDB{
 			return true;
 		}
 	}
-	public void makeAdmin(User user) {
+	public void makeAdmin(Admin user) {
 		adminInfoList.add(new Pair<String, String>(user.getUserID(), user.getUserPassword()));
 		user.isAdmin = true;
 	}
@@ -97,6 +99,7 @@ public class UserDB{
 				}
 				else {
 					if(((PublicUser)user).getActivationStatus()) {
+						loginUser = user;
 						return 1;	
 					}
 				}
@@ -112,6 +115,9 @@ public class UserDB{
 	}
 	public User getLoginUser() {
 		return loginUser;
+	}
+	public void logOut() {
+		loginUser = null;
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {

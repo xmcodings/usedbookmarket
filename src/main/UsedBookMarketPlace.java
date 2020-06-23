@@ -1,11 +1,6 @@
 package main;
 
 
-
-import java.nio.file.Paths;
-
-import javax.swing.SwingUtilities;
-
 import controller.MainController;
 import model.Admin;
 import model.BookDB;
@@ -21,14 +16,17 @@ public class UsedBookMarketPlace {
 		String filename = "books.csv";
 		System.out.println(filename);
 		UserDB marketUsers = new UserDB();
-		BookDB marketBooks = new BookDB(filename);
-		Admin admin = new Admin("admin", "nayana"); 
-		marketUsers.addUserData(admin);  // initialize first admin with id: admin and password: nayana
-		
-		// test codes//
-		PublicUser jinwon = new PublicUser("jin", "won", "jinwon", "sdfsdf", "sdfsdf");
+		PublicUser jinwon = new PublicUser("jin", "won", "jinwon", "01046151764", "x@coogle.gom");
 		marketUsers.addUserData(jinwon);
+		marketUsers.addUserData(new PublicUser("dong", "ju", "dongju", "01046151750", "d@coogle.gom"));
+		marketUsers.addUserData(new PublicUser("soft", "ware", "software", "01046151750", "d@coogle.gom"));
+		marketUsers.addUserData(new PublicUser("theuserid", "password", "thename", "01044951750", "d@coogle.gom"));
 		
+		BookDB marketBooks = new BookDB(filename, marketUsers);
+		Admin admin = new Admin("admin", "nayana"); 
+		marketUsers.addUserData(admin);  // initialize first admin with id: admin and password: nayana		
+		// test codes//
+
 		MainMenuGUI mainGUI = new MainMenuGUI(marketUsers, marketBooks);
 		MainController marketMainController = new MainController(mainGUI, marketUsers, marketBooks);
 		mainGUI.setVisible(true);

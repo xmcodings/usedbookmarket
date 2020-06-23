@@ -15,7 +15,6 @@ import model.PublicUser;
 import model.User;
 import model.UserDB;
 import view.MainMenuGUI;
-import view.MainView;
 
 public class MainController {
 
@@ -42,6 +41,9 @@ public class MainController {
 		mainMenu.addSearchAuthorActionListener(new onClickSearchAuthorButton());
 		mainMenu.addSearchISBNActionListener(new onClickSearchISBNButton());
 		mainMenu.addSearchSellerActionListener(new onClickSearchSellerButton());
+		mainMenu.addSearchPublisherActionListener(new onClickSearchPublisherButton());
+		mainMenu.addSearchYearActionListener(new onClickSearchYearButton());
+		
 		mainMenu.addLogOutActionListener(new onClickLogOutButton());
 		
 		mainMenu.addRegisterBookActionListener(new onClickRegisterBookButton());
@@ -110,6 +112,7 @@ public class MainController {
 				System.out.println("login success");
 				// should go to user view
 				currentLoginUser = usedBookServiceUser.getLoginUser();
+				System.out.println(currentLoginUser.getUserID());
 				mainMenu.showUserMainPanel();
 			}
 			else if(loginAuth(id, pass) == 2)
@@ -133,20 +136,25 @@ public class MainController {
 			mainMenu.showSignUp();
 		}
 	}
-	
 	class onClickRegisterButton implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			
-			if(register(mainMenu.getID(), mainMenu.getPassword(), mainMenu.getName(), mainMenu.getPhoneNum(), mainMenu.getEmail())) {
-				// register success
-				mainMenu.showUserSignUpSuccess();
-				mainMenu.showMainLogin();
+			if(!(mainMenu.getID().isEmpty() && mainMenu.getPassword().isEmpty() && mainMenu.getName().isEmpty()
+					&& mainMenu.getPhoneNum().isEmpty() && mainMenu.getEmail().isEmpty()))
+			{
+				if(register(mainMenu.getID(), mainMenu.getPassword(), mainMenu.getName(), mainMenu.getPhoneNum(), mainMenu.getEmail())) {
+					// register success
+					mainMenu.showUserSignUpSuccess();
+					mainMenu.showMainLogin();
+				}
+				else {
+					// duplicate id
+				mainMenu.showDuplicateIDWarning();
+				}
 			}
 			else {
-				// duplicate id
-			mainMenu.showDuplicateIDWarning();
+				mainMenu.showGeneralNotification("Everything Should be Filled!");
 			}
 		}
 	}
@@ -234,6 +242,47 @@ public class MainController {
 		}
 	}
 	
+	class onClickSearchPublisherButton implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			String searchText = mainMenu.getSearchContext();
+			if(searchText.isEmpty()) {
+				mainMenu.showSearchTextEmptyWarning();
+			}
+			else {
+				usedBook.searchPublisher(searchText);
+				if(currentLoginUser.getIsAdmin()) {
+					mainMenu.showSearchResultAdminPanel();
+				}
+				else {
+					mainMenu.showSearchResultPanel();				
+				}
+			}
+		}
+	}
+	class onClickSearchYearButton implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			String searchText = mainMenu.getSearchContext();
+			if(searchText.isEmpty()) {
+				mainMenu.showSearchTextEmptyWarning();
+			}
+			else {
+				usedBook.searchYear(searchText);
+				if(currentLoginUser.getIsAdmin()) {
+					mainMenu.showSearchResultAdminPanel();
+				}
+				else {
+					mainMenu.showSearchResultPanel();				
+				}
+			}
+		}
+	}
+	
 	class onClickRegisterBookButton implements ActionListener{
 
 		@Override
@@ -268,6 +317,7 @@ public class MainController {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			currentLoginUser = null;
+			usedBookServiceUser.logOut();
 			mainMenu.showLogOutSuccess();
 			mainMenu.showMainLogin();
 		}
@@ -475,7 +525,7 @@ public class MainController {
 				}
 			}
 			catch (ArrayIndexOutOfBoundsException e1) {
-				mainMenu.showGeneralNotification("select user to toggle");
+				mainMenu.showGeneralNotification("select user to Delete");
 			}
 		}
 	}

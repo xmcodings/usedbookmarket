@@ -161,6 +161,7 @@ public class Book implements Comparable<Book>{
 		}
 		else {
 			priceString = Integer.toString(price);
+			this.price = price;
 		}
 
 	}

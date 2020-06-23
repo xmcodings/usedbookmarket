@@ -62,6 +62,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	private JButton searchISBNButton;
 	private JButton searchAuthorButton;
 	private JButton searchYearButton;
+	private JButton searchPublisherButton;
 	private JButton searchSellerButton;
 	
 	private JButton registerBookButton;
@@ -130,9 +131,10 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		
 		searchTitleButton    =  new JButton("Search Title");
 		searchISBNButton     =  new JButton("Search ISBN");
-		searchAuthorButton   =  new JButton("Author Search");
-		searchYearButton     =  new JButton("Publish Year Search");
-		searchSellerButton   =  new JButton("Seller Search");
+		searchAuthorButton   =  new JButton("Search Author");
+		searchYearButton     =  new JButton("Search Publish Year");
+		searchPublisherButton=  new JButton("Search Publisher");
+		searchSellerButton   =  new JButton("Search Seller");
 		
 		registerBookButton			=  new JButton("Register Book");
 		myRegisteredBookButton      =  new JButton("My Books");        
@@ -246,7 +248,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		userMainPanel = new JPanel();
 		
 		userMainPanel.setLayout(new BoxLayout(userMainPanel, BoxLayout.PAGE_AXIS));
-		
+		System.out.println(users.getLoginUser().getUserID());
 		userMainPanel.add(new JLabel("Hello " + users.getLoginUser().getUserID() +"! Welcome Back!"));
 		userMainPanel.add(new JLabel(" "));
 		userMainPanel.add(new JLabel("----- Recently Added Books -----"));
@@ -276,6 +278,8 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		searchButtonPanel.add(searchAuthorButton);
 		searchButtonPanel.add(searchISBNButton);
 		searchButtonPanel.add(searchSellerButton);
+		searchButtonPanel.add(searchYearButton);
+		searchButtonPanel.add(searchPublisherButton);
 		
 		
 		userMainPanel.add(searchButtonPanel);
@@ -289,8 +293,8 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		
 		userSpacePanel.add(registerBookButton);
 		userSpacePanel.add(myRegisteredBookButton);
-		userSpacePanel.add(transactionHistoryButton);
-		userSpacePanel.add(myProfileButton);
+		//userSpacePanel.add(transactionHistoryButton);
+		//userSpacePanel.add(myProfileButton);
 		userSpacePanel.add(logoutButton);
 		userMainPanel.add(userSpacePanel);
 		userMainPanel.add(new JLabel(" "));
@@ -669,6 +673,9 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	}
 	public void addSearchYearActionListener(ActionListener e) {
 		searchYearButton.addActionListener(e);
+	}
+	public void addSearchPublisherActionListener(ActionListener e) {
+		searchPublisherButton.addActionListener(e);
 	}
 	public void addSearchSellerActionListener(ActionListener e) {
 		searchSellerButton.addActionListener(e);

@@ -59,24 +59,6 @@ public class PublicUser extends User{
 		return isActivated;
 	}
 	
-	public void addToRegisterList(int index, Book b) {
-		
-		//registeredBooks.add(newBook);
-	}
-	public void editRegisterListBook(int index, Book b) {
-		//Book editBook = registeredBooks.get(index).getValue();
-		//		editBook.setTitle(b.getTitle());
-		//editBook.setAuthor(b.getAuthor());
-		//editBook.setISBN(b.getISBN());
-		//editBook.setPublishYear(b.getPublishYear());		
-		//editBook.setPublisher(b.getPublisher());
-		//editBook.setStatus(b.getStatusChar());
-		//editBook.setPriceString(b.getPrice());
-	}
-	public void removeRegisterListBook(int index) {
-		//registeredBooks.remove(index);
-	}
-	
 	public ArrayList<Book> getRegisteredBook(){
 		ArrayList<Book> regBook = new ArrayList<Book>();
 		

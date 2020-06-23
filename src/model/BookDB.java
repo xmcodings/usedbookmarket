@@ -1,6 +1,5 @@
 package model;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
@@ -17,12 +16,11 @@ public class BookDB{
 	ArrayList<Book> searchResult = new ArrayList<Book>();
 	private PropertyChangeSupport support = new PropertyChangeSupport(this);
 	
-	
 	public BookDB() {
 		
 	}
-	public BookDB(String filename) {
-		PublicUser dummy = new PublicUser("dummy", "dummy", "dummy", "0000000", "dummy@d.d");
+	public BookDB(String filename, UserDB marketUser) {
+		
 		BufferedReader br = null;
 		System.out.println("Working Directory = " + System.getProperty("user.dir"));
 		System.out.println("retrieving Directory = " + filename);
@@ -32,9 +30,13 @@ public class BookDB{
 	            while ((line = br.readLine()) != null) {
 
 	                // use comma as separator
-	                String[] bookData = line.split(",");
-	                addBook(new Book(bookData[0], bookData[1], bookData[2], bookData[3], bookData[4], Integer.parseInt(bookData[5]), bookData[6].charAt(0),
-	                		dummy));
+	            	String[] bookData = line.split(",");
+	                for(User u: marketUser.getAllUserdata()) {
+	                	if(u.getUserID().equals(bookData[7])) {
+	                		addBook(new Book(bookData[0], bookData[1], bookData[2], bookData[3], bookData[4], Integer.parseInt(bookData[5]), bookData[6].charAt(0), (PublicUser)u));
+	                	}
+	                }
+	            	
 	            }
 	        } catch (FileNotFoundException e) {
 	            e.printStackTrace();
@@ -92,6 +94,15 @@ public class BookDB{
 			}
 		}
 	}
+	public void searchPublisher(String searchText) {
+		
+		searchResult.clear();
+		for(Book book : bookdata) {
+			if(book.getPublisher().contains(searchText)) {
+				searchResult.add(book);
+			}
+		}
+	}
 	
 	public void searchSeller(String searchText) {
 		
@@ -121,6 +132,10 @@ public class BookDB{
 		support.firePropertyChange("editBook", oldList, editBook);
 	}
 	
+	public ArrayList<Book> getBookData(){
+
+		return bookdata;
+	}
 	
 	public void printBooks() {
 		
