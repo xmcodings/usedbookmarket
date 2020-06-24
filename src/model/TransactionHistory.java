@@ -11,7 +11,8 @@ public class TransactionHistory {
 	
 	public TransactionHistory() {
 		bookOrders = new ArrayList<BookOrder>();
-		
+		searchedSellerBookOrders = new ArrayList<BookOrder>();
+		searchedBuyerBookOrders = new ArrayList<BookOrder>();
 		
 		
 	}
@@ -20,22 +21,29 @@ public class TransactionHistory {
 		return bookOrders;
 	}
 
-	public void setBookOrders(ArrayList<BookOrder> bookOrders) {
-		this.bookOrders = bookOrders;
-	}
 	public void addBookOrder(BookOrder b) {
 		bookOrders.add(b);
 	}
 	
 	public void removeTransaction(Book rm) {
-		for(BookOrder bo : bookOrders) {
-			if(bo.getBook().equals(rm)) {
-				bookOrders.remove(bo);
+		int index = 0;
+		int arraySize = bookOrders.size();
+		while(true) {
+			if(bookOrders.get(index).getBook().equals(rm)) {
+				bookOrders.remove(index);
+				arraySize--;
+			}
+			else {
+				index++;
+			}
+			if(index == arraySize) {
+				break;
 			}
 		}
 	}
 	
 	public void searchTransactionBuyerID(String buyerID) {
+		searchedBuyerBookOrders.clear();
 		for(BookOrder bo : bookOrders) {
 			if(bo.getBuyerID().equals(buyerID)) {
 				searchedBuyerBookOrders.add(bo);			
@@ -43,6 +51,7 @@ public class TransactionHistory {
 		}
 	}
 	public void searchTransactionSellerID(String sellerID) {
+		searchedSellerBookOrders.clear();
 		for(BookOrder bo : bookOrders) {
 			if(bo.getSellerID().equals(sellerID)) {
 				searchedSellerBookOrders.add(bo);			

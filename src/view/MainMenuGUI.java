@@ -433,14 +433,13 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		String columns[] = {"Title", "Price", "BuyerID", "Register Date"};
 		
 		bookOrderModel = new DefaultTableModel(columns, 0);
-		drawBookOrderTable(bookOrderModel, bookOrders.getSellerBookOrder());
-		
+		bookOrderModel = drawBookOrderTable(bookOrderModel, bookOrders.getSellerBookOrder());
+
+		searchTable.setModel(bookOrderModel);		
 		JScrollPane searchScrollPane = new JScrollPane(searchTable);
 		
 		myTransactionPanel.add(searchScrollPane);
 		myTransactionPanel.add(new JLabel(" "));
-		myTransactionPanel.add(new JLabel(" "));
-		myTransactionPanel.add(deleteOrderButton);
 		myTransactionPanel.add(new JLabel(" "));
 		myTransactionPanel.add(backButton);
 		myTransactionPanel.add(new JLabel(" "));
@@ -900,7 +899,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	}
 	
 	
-	private void drawBookOrderTable(TableModel t, ArrayList<BookOrder> list) {
+	private DefaultTableModel drawBookOrderTable(TableModel t, ArrayList<BookOrder> list) {
 
 		((DefaultTableModel) t).setRowCount(0);
 		
@@ -912,7 +911,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 			Object row[] = {title, price, buyerID, regdate};	
 			((DefaultTableModel) t).addRow(row);
 		}
-		searchTable.setModel(t);
+		return (DefaultTableModel) t;
 	}
 	private void updateBookOrderModel(ArrayList<BookOrder> list) {
 		

@@ -174,6 +174,7 @@ public class BookDB{
 		ArrayList<Book> oldList = new ArrayList<Book>(searchResult);
 		bookdata.remove(b);
 		searchResult.remove(b);
+		
 		support.firePropertyChange("removeBook", oldList, searchResult);
 	}
 	

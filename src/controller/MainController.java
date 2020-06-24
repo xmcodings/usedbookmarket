@@ -305,6 +305,8 @@ public class MainController {
 					userTableSelectionBook = usedBook.getSearchResult().get(tableSelectIndex);
 					BookOrder bo = new BookOrder(userTableSelectionBook, (PublicUser)currentLoginUser);
 					orderHistory.addBookOrder(bo);
+					// send email~~~
+					
 					mainMenu.showUserBuySuccess(((PublicUser)currentLoginUser).getUserEmail(), userTableSelectionBook.getRegisterUserEmail()); // success code 0
 				}
 				else {
@@ -359,6 +361,7 @@ public class MainController {
 				if(mainMenu.showUserDeleteConfirm() == 0) {
 					// int deleteIndex = usedBook.getSearchResult().get(tableSelectIndex).getBookNum();
 					Book k = usedBook.getSearchResult().get(tableSelectIndex);
+					orderHistory.removeTransaction(k);
 					usedBook.removeBook(k);
 					mainMenu.showGeneralNotification("Book Deleted!");
 				}
@@ -431,6 +434,8 @@ public class MainController {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			
+			orderHistory.searchTransactionSellerID(currentLoginUser.getUserID());
+			mainMenu.showMyTransactionPanel();
 		}
 	}
 	class onClickMyProfileButton implements ActionListener{
