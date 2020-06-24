@@ -63,29 +63,29 @@ class BookDBTest {
 	@Test
 	void testAuthorSearch() {
 		testbooks.searchAuthor("author4");
-		assertEquals(testbooks.getSearchResult().get(0).getAuthor(), "author4");
+		assertEquals("author4", testbooks.getSearchResult().get(0).getAuthor());
 	}
 	@Test
 	void testPublisherSearch() {
 		testbooks.searchPublisher("pub12");
-		assertEquals(testbooks.getSearchResult().get(0).getPublisher(), "pub12");
+		assertEquals("pub12", testbooks.getSearchResult().get(0).getPublisher());
 	}
 	@Test
 	void testISBNSearch() {
 		testbooks.searchISBN("15-13");
-		assertEquals(testbooks.getSearchResult().get(0).getISBN(), "15-13");
+		assertEquals("15-13", testbooks.getSearchResult().get(0).getISBN());
 	}
 	@Test
 	void testYearSearch() {
 		testbooks.searchYear("200");
-		assertEquals(testbooks.getSearchResult().get(0).getPublishYear(), "2000");
-		assertEquals(testbooks.getSearchResult().size(), 10); // 2000~2009 => 10
+		assertEquals("2000", testbooks.getSearchResult().get(0).getPublishYear());
+		assertEquals(10, testbooks.getSearchResult().size()); // 2000~2009 => 10
 	}
 	@Test
 	void testSellerSearch() {
 		testbooks.searchSeller("test1");
-		assertEquals(testbooks.getSearchResult().get(0).getRegisterUserId(), "test1");
-		assertEquals(testbooks.getSearchResult().size(), 10);
+		assertEquals("test1", testbooks.getSearchResult().get(0).getRegisterUserId());
+		assertEquals(10, testbooks.getSearchResult().size());
 	}
 	
 	@Test
@@ -95,13 +95,13 @@ class BookDBTest {
 		Book edit = new Book("edittitle", "editauthor", "19-1515", "1500", "editpub", 4000, 'c', testuser1);
 		testbooks.editBook(3, edit);
 		
-		assertEquals(testbooks.getSearchResult().get(3).getTitle(), "edittitle");
-		assertEquals(testbooks.getSearchResult().get(3).getAuthor(), "editauthor");
-		assertEquals(testbooks.getSearchResult().get(3).getISBN(), "19-1515");
-		assertEquals(testbooks.getSearchResult().get(3).getPublishYear(), "1500");
-		assertEquals(testbooks.getSearchResult().get(3).getPublisher(), "editpub");
-		assertEquals(testbooks.getSearchResult().get(3).getPriceString(), "4000");
-		assertEquals(testbooks.getSearchResult().get(3).getRegisterUserId(), "test1");
+		assertEquals("edittitle", testbooks.getSearchResult().get(3).getTitle());
+		assertEquals("editauthor", testbooks.getSearchResult().get(3).getAuthor());   
+		assertEquals("19-1515", testbooks.getSearchResult().get(3).getISBN());        
+		assertEquals("1500", testbooks.getSearchResult().get(3).getPublishYear());    
+		assertEquals("editpub", testbooks.getSearchResult().get(3).getPublisher());   
+		assertEquals("4000", testbooks.getSearchResult().get(3).getPriceString());    
+		assertEquals("test1", testbooks.getSearchResult().get(3).getRegisterUserId());
 	}
 	@Test
 	void testRemoveBook() {
@@ -112,7 +112,7 @@ class BookDBTest {
 		Book toRemove = testbooks.getSearchResult().get(4);
 		testbooks.removeBook(toRemove);
 		int afterSize = testbooks.getBookData().size();
-		assertEquals(afterSize, beforeSize-1); // size - 1
+		assertEquals(beforeSize-1, afterSize); // size - 1
 	}
 	
 	

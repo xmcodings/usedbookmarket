@@ -11,7 +11,9 @@ import javax.swing.event.ListSelectionListener;
 import model.Admin;
 import model.Book;
 import model.BookDB;
+import model.BookOrder;
 import model.PublicUser;
+import model.TransactionHistory;
 import model.User;
 import model.UserDB;
 import view.MainMenuGUI;
@@ -23,13 +25,14 @@ public class MainController {
 	MainMenuGUI mainMenu;
 	User currentLoginUser;
 	Book userTableSelectionBook = null;
+	TransactionHistory orderHistory;
 	int tableSelectIndex = -1;
 	
-	public MainController(MainMenuGUI view, UserDB userData, BookDB bookData) {
+	public MainController(MainMenuGUI view, UserDB userData, BookDB bookData, TransactionHistory markethistory) {
 		this.mainMenu = view;
 		this.usedBookServiceUser = userData;
 		this.usedBook = bookData;
-		
+		this.orderHistory = markethistory;
 		
 		// for main menu
 		mainMenu.addLoginActionListener(new onClickLoginButton());
@@ -48,7 +51,7 @@ public class MainController {
 		
 		mainMenu.addRegisterBookActionListener(new onClickRegisterBookButton());
 		mainMenu.addMyRegisteredBookActionListener(new onClickMyRegisteredBookButton());
-		mainMenu.addTransactionHistoryActionListener(new onClickMyTransactionButton());
+		mainMenu.addCurrentTransactionActionListener(new onClickMyTransactionButton());
 		mainMenu.addMyProfileActionListener(new onClickMyProfileButton());
 		mainMenu.addSellBookActionListener(new onClickSellBookButton());
 		
@@ -300,6 +303,8 @@ public class MainController {
 			if(tableSelectIndex > -1) {
 				if(mainMenu.showUserBuyConfirm() == 0) {
 					userTableSelectionBook = usedBook.getSearchResult().get(tableSelectIndex);
+					BookOrder bo = new BookOrder(userTableSelectionBook, (PublicUser)currentLoginUser);
+					orderHistory.addBookOrder(bo);
 					mainMenu.showUserBuySuccess(((PublicUser)currentLoginUser).getUserEmail(), userTableSelectionBook.getRegisterUserEmail()); // success code 0
 				}
 				else {

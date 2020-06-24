@@ -16,7 +16,9 @@ import javax.swing.table.TableModel;
 
 import model.Book;
 import model.BookDB;
+import model.BookOrder;
 import model.PublicUser;
+import model.TransactionHistory;
 import model.UserDB;
 
 import java.awt.FlowLayout;
@@ -36,7 +38,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	
 	private UserDB users;
 	private BookDB books;
-	
+	private TransactionHistory bookOrders;
 	
 	private JPanel contentPane;
 	
@@ -47,6 +49,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	private JPanel searchResultPanel;
 	private JPanel registerBookPanel;
 	private JPanel myRegisteredBookPanel;
+	private JPanel myTransactionPanel;
 	private JPanel editBookPanel;
 	private JPanel userManagePanel;
 	
@@ -67,7 +70,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	
 	private JButton registerBookButton;
 	private JButton myRegisteredBookButton;
-	private JButton transactionHistoryButton;
+	private JButton currentTransactionButton;
 	private JButton myProfileButton;
 	private JButton logoutButton;
 	
@@ -84,6 +87,8 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	private JButton manageUserButton;
 	private JButton deleteUserButton;
 	private JButton toggleUserActivationButton;
+	private JButton deleteOrderButton;
+	
 	
 	
 	private JTextField idText;
@@ -109,8 +114,10 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	private JLabel loginPasswordLabel;
 	private DefaultTableModel bookModel;
 	private	DefaultTableModel userModel;
+	private	DefaultTableModel bookOrderModel;
+	
 
-	public MainMenuGUI(UserDB systemUsers, BookDB marketBooks) {
+	public MainMenuGUI(UserDB systemUsers, BookDB marketBooks, TransactionHistory orders) {
 		
 		setTitle("Used Book Marketplace");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -118,6 +125,8 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		
 		this.users = systemUsers;
 		this.books = marketBooks;
+		this.bookOrders = orders;
+		
 		books.addPropertyChangeListener(this);
 		
 		contentPane = new JPanel();
@@ -138,7 +147,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		
 		registerBookButton			=  new JButton("Register Book");
 		myRegisteredBookButton      =  new JButton("My Books");        
-		transactionHistoryButton    =  new JButton("Transaction Histroy");         
+		currentTransactionButton    =  new JButton("on-going Trade");         
 		myProfileButton             =  new JButton("My Profile");   
 		logoutButton				=  new JButton("Log Out");
 		                                             
@@ -147,7 +156,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		editBookButton = new JButton("edit");
 		deleteBookButton = new JButton("delete");
 		confirmEditBookButton = new JButton("edit confirm");
-		
+		deleteOrderButton = new JButton("Delete Order");
 		
 		manageUserButton = new JButton("Manage Users");
 		toggleUserActivationButton = new JButton("Toggle Activation");
@@ -293,7 +302,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		
 		userSpacePanel.add(registerBookButton);
 		userSpacePanel.add(myRegisteredBookButton);
-		//userSpacePanel.add(transactionHistoryButton);
+		userSpacePanel.add(currentTransactionButton);
 		//userSpacePanel.add(myProfileButton);
 		userSpacePanel.add(logoutButton);
 		userMainPanel.add(userSpacePanel);
@@ -407,6 +416,38 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		refreshPane();
 		System.out.println("showing my books view page");
 		
+	}
+	
+	public void showMyTransactionPanel() {
+		
+		myTransactionPanel = new JPanel();
+		myTransactionPanel.setLayout(new BoxLayout(myTransactionPanel, BoxLayout.PAGE_AXIS));
+		myTransactionPanel.add(new JLabel(" "));
+		myTransactionPanel.add(new JLabel(" "));
+		myTransactionPanel.add(new JLabel("----- My Current Transactions -----"));
+		myTransactionPanel.add(new JLabel(" "));
+		myTransactionPanel.add(new JLabel(" "));
+		// table to show search results
+		// reads search result directly from BookDB instance
+		
+		String columns[] = {"Title", "Price", "BuyerID", "Register Date"};
+		
+		bookOrderModel = new DefaultTableModel(columns, 0);
+		drawBookOrderTable(bookOrderModel, bookOrders.getSellerBookOrder());
+		
+		JScrollPane searchScrollPane = new JScrollPane(searchTable);
+		
+		myTransactionPanel.add(searchScrollPane);
+		myTransactionPanel.add(new JLabel(" "));
+		myTransactionPanel.add(new JLabel(" "));
+		myTransactionPanel.add(deleteOrderButton);
+		myTransactionPanel.add(new JLabel(" "));
+		myTransactionPanel.add(backButton);
+		myTransactionPanel.add(new JLabel(" "));
+				
+		contentPane = myTransactionPanel;
+		refreshPane();
+		System.out.println("showing my books view page");
 	}
 	
 	public void showAdminMainPanel() {
@@ -686,8 +727,8 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 	public void addMyRegisteredBookActionListener(ActionListener e) {
 		myRegisteredBookButton.addActionListener(e);
 	}
-	public void addTransactionHistoryActionListener(ActionListener e) {
-		transactionHistoryButton.addActionListener(e);
+	public void addCurrentTransactionActionListener(ActionListener e) {
+		currentTransactionButton.addActionListener(e);
 	}
 	public void addMyProfileActionListener(ActionListener e) {
 		myProfileButton.addActionListener(e);
@@ -858,6 +899,34 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		}
 	}
 	
+	
+	private void drawBookOrderTable(TableModel t, ArrayList<BookOrder> list) {
+
+		((DefaultTableModel) t).setRowCount(0);
+		
+		for(BookOrder bo : list) {
+			String title = bo.getBookTitle();
+			String price = bo.getBookPrice();
+			String buyerID = bo.getBuyerID();
+			String regdate = bo.getBook().getRegisterDate().toString();
+			Object row[] = {title, price, buyerID, regdate};	
+			((DefaultTableModel) t).addRow(row);
+		}
+		searchTable.setModel(t);
+	}
+	private void updateBookOrderModel(ArrayList<BookOrder> list) {
+		
+		bookOrderModel.setRowCount(0);
+		
+		for(BookOrder bo : list) {
+			String title = bo.getBookTitle();
+			String price = bo.getBookPrice();
+			String buyerID = bo.getBuyerID();
+			String regdate = bo.getBook().getRegisterDate().toString();
+			Object row[] = {title, price, buyerID, regdate};	
+			bookOrderModel.addRow(row);
+		}
+	}
 	
 	
 

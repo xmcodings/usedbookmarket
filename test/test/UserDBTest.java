@@ -34,7 +34,7 @@ class UserDBTest {
 	void testAddUser() {
 	
 		for(int i = 0; i < testusers.getPublicUserdata().size(); i++) {
-			assertEquals(testusers.getPublicUserdata().get(i).getUserID(), "testid"+i);
+			assertEquals("testid"+i, testusers.getPublicUserdata().get(i).getUserID());
 			assertEquals(testusers.getPublicUserdata().get(i).getUserPassword(), "pass"+i);
 		}
 		
