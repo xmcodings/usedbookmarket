@@ -68,8 +68,13 @@ class TransactionHistoryTest {
 	
 	@Test
 	void searchSellerTest() {
+		// 2 book orders for testuser 0 exists
+		// search testuser0 in book order
 		
+		transactions.searchTransactionSellerID("testid0");
 		
+		int searchItemElements = transactions.getSellerBookOrder().size();
+		assertEquals(2, searchItemElements);
 	}
 	
 	
