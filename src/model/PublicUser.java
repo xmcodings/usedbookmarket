@@ -59,8 +59,8 @@ public class PublicUser extends User{
 		return isActivated;
 	}
 	
-	public ArrayList<Book> getRegisteredBook(){
-		ArrayList<Book> regBook = new ArrayList<Book>();
+	public ArrayList<BookItem> getRegisteredBook(){
+		ArrayList<BookItem> regBook = new ArrayList<BookItem>();
 		
 		
 		return regBook;

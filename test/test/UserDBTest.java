@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.Admin;
-import model.Book;
+import model.BookItem;
 import model.PublicUser;
 import model.UserDB;
 

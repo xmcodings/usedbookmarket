@@ -12,8 +12,8 @@ import java.util.Collections;
 public class BookDB{
 
 	
-	ArrayList<Book> bookdata = new ArrayList<Book>();
-	ArrayList<Book> searchResult = new ArrayList<Book>();
+	ArrayList<BookItem> bookdata = new ArrayList<BookItem>();
+	ArrayList<BookItem> searchResult = new ArrayList<BookItem>();
 	private PropertyChangeSupport support = new PropertyChangeSupport(this);
 	
 	public BookDB() {
@@ -33,7 +33,7 @@ public class BookDB{
 	            	String[] bookData = line.split(",");
 	                for(User u: marketUser.getAllUserdata()) {
 	                	if(u.getUserID().equals(bookData[7])) {
-	                		addBook(new Book(bookData[0], bookData[1], bookData[2], bookData[3], bookData[4], Integer.parseInt(bookData[5]), bookData[6].charAt(0), (PublicUser)u));
+	                		addBook(new BookItem(bookData[0], bookData[1], bookData[2], bookData[3], bookData[4], Integer.parseInt(bookData[5]), bookData[6].charAt(0), (PublicUser)u));
 	                	}
 	                }
 	            	
@@ -53,14 +53,14 @@ public class BookDB{
 	        }
 	}
 	
-	public ArrayList<Book> getSearchResult() {
+	public ArrayList<BookItem> getSearchResult() {
 		return searchResult;
 	}
 	
 	public void searchTitle(String searchText) {
 		
 		searchResult.clear();
-		for(Book book : bookdata) {
+		for(BookItem book : bookdata) {
 			if(book.getTitle().contains(searchText)) {
 				searchResult.add(book);
 			}
@@ -69,7 +69,7 @@ public class BookDB{
 	
 	public void searchAuthor(String searchText) {		
 		searchResult.clear();
-		for(Book book : bookdata) {
+		for(BookItem book : bookdata) {
 			if(book.getAuthor().contains(searchText)) {
 				searchResult.add(book);
 			}
@@ -79,7 +79,7 @@ public class BookDB{
 	public void searchISBN(String searchText) {
 		
 		searchResult.clear();
-		for(Book book : bookdata) {
+		for(BookItem book : bookdata) {
 			if(book.getISBN().contains(searchText)) {
 				searchResult.add(book);
 			}
@@ -88,7 +88,7 @@ public class BookDB{
 	public void searchYear(String searchText) {
 		
 		searchResult.clear();
-		for(Book book : bookdata) {
+		for(BookItem book : bookdata) {
 			if(book.getPublishYear().contains(searchText)) {
 				searchResult.add(book);
 			}
@@ -97,7 +97,7 @@ public class BookDB{
 	public void searchPublisher(String searchText) {
 		
 		searchResult.clear();
-		for(Book book : bookdata) {
+		for(BookItem book : bookdata) {
 			if(book.getPublisher().contains(searchText)) {
 				searchResult.add(book);
 			}
@@ -107,21 +107,21 @@ public class BookDB{
 	public void searchSeller(String searchText) {
 		
 		searchResult.clear();
-		for(Book book : bookdata) {
+		for(BookItem book : bookdata) {
 			if(book.getRegisterUserId().contains(searchText)) {
 				searchResult.add(book);
 			}
 		}
 	}
 	
-	public void addBook(Book b) {
+	public void addBook(BookItem b) {
 		bookdata.add(b);
 		makeRecentBookList();
 		//support.firePropertyChange("addBook", oldList, bookdata);
 	}
-	public void editBook(int index, Book b) {
-		ArrayList<Book> oldList = new ArrayList<Book>(searchResult);
-		Book editBook = searchResult.get(index);
+	public void editBook(int index, BookItem b) {
+		ArrayList<BookItem> oldList = new ArrayList<BookItem>(searchResult);
+		BookItem editBook = searchResult.get(index);
 		editBook.setTitle(b.getTitle());
 		editBook.setAuthor(b.getAuthor());
 		editBook.setISBN(b.getISBN());
@@ -132,20 +132,20 @@ public class BookDB{
 		support.firePropertyChange("editBook", oldList, editBook);
 	}
 	
-	public ArrayList<Book> getBookData(){
+	public ArrayList<BookItem> getBookData(){
 
 		return bookdata;
 	}
 	
 	public void printBooks() {
 		
-		for(Book b: bookdata) {
+		for(BookItem b: bookdata) {
 			System.out.println("book " + b.getTitle() + ", " + b.getAuthor() + ", " + b.getISBN() + ", " + b.getStatus() + ", " + b.getRegisterUserId() + ", " + b.getRegisterDate());
 		}
 	}
 	
 	private void makeRecentBookList() {
-		ArrayList<Book> oldList = new ArrayList<Book>(searchResult);
+		ArrayList<BookItem> oldList = new ArrayList<BookItem>(searchResult);
 		searchResult.clear();
 		
 		for(int i = bookdata.size()-1; i > bookdata.size()-6; i--) {
@@ -159,19 +159,19 @@ public class BookDB{
 		support.firePropertyChange("recentBookChange", oldList, searchResult);
 	}
 	
-	public ArrayList<Book> getRecentBookList() {
+	public ArrayList<BookItem> getRecentBookList() {
 		makeRecentBookList();
 		return searchResult;
 	}
-	public ArrayList<Book> getSortByDate(ArrayList<Book> toSortArray) {
+	public ArrayList<BookItem> getSortByDate(ArrayList<BookItem> toSortArray) {
 		
-		ArrayList<Book> temp = toSortArray;
+		ArrayList<BookItem> temp = toSortArray;
 		Collections.sort(temp);
 		return temp;
 	}
 	
-	public void removeBook(Book b) {
-		ArrayList<Book> oldList = new ArrayList<Book>(searchResult);
+	public void removeBook(BookItem b) {
+		ArrayList<BookItem> oldList = new ArrayList<BookItem>(searchResult);
 		bookdata.remove(b);
 		searchResult.remove(b);
 		

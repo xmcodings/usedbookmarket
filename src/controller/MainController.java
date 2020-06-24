@@ -9,7 +9,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import model.Admin;
-import model.Book;
+import model.BookItem;
 import model.BookDB;
 import model.BookOrder;
 import model.PublicUser;
@@ -24,7 +24,7 @@ public class MainController {
 	BookDB usedBook; // = new BookDB();
 	MainMenuGUI mainMenu;
 	User currentLoginUser;
-	Book userTableSelectionBook = null;
+	BookItem userTableSelectionBook = null;
 	TransactionHistory orderHistory;
 	int tableSelectIndex = -1;
 	
@@ -360,7 +360,7 @@ public class MainController {
 			if(tableSelectIndex >-1) {
 				if(mainMenu.showUserDeleteConfirm() == 0) {
 					// int deleteIndex = usedBook.getSearchResult().get(tableSelectIndex).getBookNum();
-					Book k = usedBook.getSearchResult().get(tableSelectIndex);
+					BookItem k = usedBook.getSearchResult().get(tableSelectIndex);
 					orderHistory.removeTransaction(k);
 					usedBook.removeBook(k);
 					mainMenu.showGeneralNotification("Book Deleted!");
@@ -412,7 +412,7 @@ public class MainController {
 				//check if price contains letter
 				try {
 					intPrice = Integer.parseInt(price);
-					Book editInfo = new Book(title, author, isbn, pyear, publisher, intPrice, status, (PublicUser) currentLoginUser);
+					BookItem editInfo = new BookItem(title, author, isbn, pyear, publisher, intPrice, status, (PublicUser) currentLoginUser);
 					usedBook.editBook(tableSelectIndex, editInfo);
 					System.out.println("book edited!!");
 					usedBook.printBooks();
@@ -485,7 +485,7 @@ public class MainController {
 				//check if price contains letter
 				try {
 					intPrice = Integer.parseInt(price);
-					Book newbook = new Book(title, author, isbn, pyear, publisher, intPrice, status, (PublicUser) currentLoginUser);
+					BookItem newbook = new BookItem(title, author, isbn, pyear, publisher, intPrice, status, (PublicUser) currentLoginUser);
 					usedBook.addBook(newbook);
 					System.out.println("book added!!");
 					//((PublicUser)currentLoginUser).addToRegisterList(newbook);
@@ -521,8 +521,8 @@ public class MainController {
 					}
 					else {
 						usedBook.searchSeller(selectedUser.getUserID());
-						ArrayList<Book> booksToDelete = new ArrayList<Book>(usedBook.getSearchResult());
-						for(Book b: booksToDelete) {
+						ArrayList<BookItem> booksToDelete = new ArrayList<BookItem>(usedBook.getSearchResult());
+						for(BookItem b: booksToDelete) {
 							usedBook.removeBook(b);
 							System.out.println("deleting book" + b.getTitle());
 						}

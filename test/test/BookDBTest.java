@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.Book;
+import model.BookItem;
 import model.PublicUser;
 import model.BookDB;
 
@@ -27,10 +27,10 @@ class BookDBTest {
 		testuser1 = new PublicUser("test1", "test1", "testname1", "01044441", "mk1@gm.co");
 		testuser2 = new PublicUser("test2", "test2", "testname2", "01044442", "mk2@gm.co");
 		for(int i = 0; i < 10; i++) {
-			testbooks.addBook(new Book("title"+i, "author" + i, "15-"+i, "200"+i, "pub" + i, i*50, 'a', testuser1));
+			testbooks.addBook(new BookItem("title"+i, "author" + i, "15-"+i, "200"+i, "pub" + i, i*50, 'a', testuser1));
 		}
 		for(int i = 10; i < 20; i++) {
-			testbooks.addBook(new Book("title"+i, "author" + i, "15-"+i, "20"+i, "pub" + i, i*50, 'b', testuser2));
+			testbooks.addBook(new BookItem("title"+i, "author" + i, "15-"+i, "20"+i, "pub" + i, i*50, 'b', testuser2));
 		}
 	}
 
@@ -92,7 +92,7 @@ class BookDBTest {
 	void testEditBook() {
 		// editing books registered by "test1" user
 		testbooks.searchSeller("test1");
-		Book edit = new Book("edittitle", "editauthor", "19-1515", "1500", "editpub", 4000, 'c', testuser1);
+		BookItem edit = new BookItem("edittitle", "editauthor", "19-1515", "1500", "editpub", 4000, 'c', testuser1);
 		testbooks.editBook(3, edit);
 		
 		assertEquals("edittitle", testbooks.getSearchResult().get(3).getTitle());
@@ -109,7 +109,7 @@ class BookDBTest {
 		int beforeSize = testbooks.getBookData().size();
 		
 		testbooks.searchSeller("test1");
-		Book toRemove = testbooks.getSearchResult().get(4);
+		BookItem toRemove = testbooks.getSearchResult().get(4);
 		testbooks.removeBook(toRemove);
 		int afterSize = testbooks.getBookData().size();
 		assertEquals(beforeSize-1, afterSize); // size - 1

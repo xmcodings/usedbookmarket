@@ -2,22 +2,22 @@ package model;
 
 public class BookOrder {
 
-	private Book transactionBook;
+	private BookItem transactionBook;
 	private PublicUser BuyUser;
 	
 	
-	public BookOrder(Book transBook, PublicUser buyUser) {
+	public BookOrder(BookItem transBook, PublicUser buyUser) {
 		this.setTransactionBook(transBook);
 		this.setBuyUser(buyUser);	
 	}
 
 
-	public Book getTransactionBook() {
+	public BookItem getTransactionBook() {
 		return transactionBook;
 	}
 
 
-	public void setTransactionBook(Book transactionBook) {
+	public void setTransactionBook(BookItem transactionBook) {
 		this.transactionBook = transactionBook;
 	}
 
@@ -30,7 +30,7 @@ public class BookOrder {
 	public void setBuyUser(PublicUser buyUser) {
 		BuyUser = buyUser;
 	}
-	public Book getBook() {
+	public BookItem getBook() {
 		return transactionBook;
 	}
 	public String getBookTitle() {

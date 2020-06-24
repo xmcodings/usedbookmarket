@@ -13,7 +13,6 @@ public abstract class User {
 	private static int totalUser = 0;
 	
 	public User() {
-		this.userNum = totalUser;
 		totalUser++;
 	}
 	
@@ -40,10 +39,6 @@ public abstract class User {
 		return userNum;
 	}
 
-	public void setUserNum(int userNum) {
-		this.userNum = userNum;
-	}
-	
 	
 	
 }

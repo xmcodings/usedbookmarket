@@ -25,7 +25,7 @@ public class TransactionHistory {
 		bookOrders.add(b);
 	}
 	
-	public void removeTransaction(Book rm) {
+	public void removeTransaction(BookItem rm) {
 		int index = 0;
 		int arraySize = bookOrders.size();
 		while(true) {

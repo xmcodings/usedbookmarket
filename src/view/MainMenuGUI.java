@@ -14,7 +14,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import model.Book;
+import model.BookItem;
 import model.BookDB;
 import model.BookOrder;
 import model.PublicUser;
@@ -583,7 +583,7 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		System.out.println("showing register book view page");
 		
 	}
-	public void showEditBookPanel(Book editBook) {
+	public void showEditBookPanel(BookItem editBook) {
 		
 		editBookPanel = new JPanel();
 		
@@ -825,11 +825,11 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		this.setContentPane(contentPane);
 		revalidate();
 	}
-	private void drawBookTable(TableModel t, ArrayList<Book> list) {
+	private void drawBookTable(TableModel t, ArrayList<BookItem> list) {
 
 		//bookModel = new DefaultTableModel(columns, 0);
 		bookModel.setRowCount(0);
-		for(Book b: list) {
+		for(BookItem b: list) {
 			String title = b.getTitle();
 			String author = b.getAuthor();
 			String isbn = b.getISBN();
@@ -846,11 +846,11 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		}
 		searchTable.setModel(t);
 	}
-	private void updateBookModel(ArrayList<Book> list) {
+	private void updateBookModel(ArrayList<BookItem> list) {
 		
 		bookModel.setRowCount(0);
 		
-		for(Book b: list) {
+		for(BookItem b: list) {
 			String title = b.getTitle();
 			String author = b.getAuthor();
 			String isbn = b.getISBN();
@@ -936,11 +936,11 @@ public class MainMenuGUI extends JFrame implements PropertyChangeListener{
 		System.out.println("Book List Changed!");
 		if(evt.getPropertyName().equals("removeBook")) {			
 			//showMyRegisteredBookPanel();
-			updateBookModel((ArrayList<Book>) evt.getNewValue());
+			updateBookModel((ArrayList<BookItem>) evt.getNewValue());
 			refreshPane();
 		}
 		if(evt.getPropertyName().equals("recentBookChange")) {
-			updateBookModel((ArrayList<Book>) evt.getNewValue());
+			updateBookModel((ArrayList<BookItem>) evt.getNewValue());
 			refreshPane();
 		}	
 		if(evt.getPropertyName().equals("toggleUserActivation")) {

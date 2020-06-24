@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.Admin;
-import model.Book;
+import model.BookItem;
 import model.BookDB;
 import model.BookOrder;
 import model.PublicUser;
@@ -32,7 +32,7 @@ class TransactionHistoryTest {
 			testusers.addUserData(new PublicUser("testid"+i, "pass"+i, "name"+i, "0100000000"+i, "test"+i+"@lolqna.co.kr"));
 		}
 		for(int i = 0; i < 3; i++) {
-			testbooks.addBook(new Book("title"+i, "author" + i, "15-"+i, "200"+i, "pub" + i, i*50, 'a', testusers.getPublicUserdata().get(i)));
+			testbooks.addBook(new BookItem("title"+i, "author" + i, "15-"+i, "200"+i, "pub" + i, i*50, 'a', testusers.getPublicUserdata().get(i)));
 		}
 		
 		BookOrder bo0 = new BookOrder(testbooks.getBookData().get(0), testusers.getPublicUserdata().get(1)); // testuser 1 ordered title0 book from testuser 0
@@ -59,7 +59,7 @@ class TransactionHistoryTest {
 	@Test
 	void removeTransactionTest() {
 		int beforeAdd = transactions.getBookOrders().size();
-		Book toRemove = testbooks.getBookData().get(0);
+		BookItem toRemove = testbooks.getBookData().get(0);
 		transactions.removeTransaction(toRemove); // 2 transactions should be removed!!
 		int afterAdd = transactions.getBookOrders().size();
 		

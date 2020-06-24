@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class Book implements Comparable<Book>{
+public class BookItem implements Comparable<BookItem>{
 
 	private String title;
 	private String author;
@@ -21,8 +21,8 @@ public class Book implements Comparable<Book>{
 	private PublicUser registerUser;
 	
 
-	public Book(String title, String author, String isbn, String publishyear, String publisher,int price, char status, PublicUser user) {
-		setTitle(title);
+	public BookItem(String title, String author, String isbn, String publishyear, String publisher,int price, char status, PublicUser user) {
+		setTitle(title); 
 		setAuthor(author);
 		this.registerUser = user;
 		setISBN(isbn);
@@ -36,7 +36,7 @@ public class Book implements Comparable<Book>{
 		this.registerDate = Calendar.getInstance().getTime();
 	}
 	
-	public Book(Book b) {
+	public BookItem(BookItem b) {
 		setTitle(b.getTitle());
 		setAuthor(b.getAuthor());
 		this.registerUser = b.getRegisterUser();
@@ -178,7 +178,7 @@ public class Book implements Comparable<Book>{
 	
 	// default sort
 	@Override
-	public int compareTo(Book o) {
+	public int compareTo(BookItem o) {
 		// TODO Auto-generated method stub
 		return getRegisterDate().compareTo(o.getRegisterDate());
 	}
