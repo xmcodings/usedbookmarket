@@ -29,6 +29,9 @@ public class TransactionHistory {
 		int index = 0;
 		int arraySize = bookOrders.size();
 		while(true) {
+			if(index == arraySize) {
+				break;
+			}
 			if(bookOrders.get(index).getBook().equals(rm)) {
 				bookOrders.remove(index);
 				arraySize--;
